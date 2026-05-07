@@ -1,0 +1,255 @@
+/* ================= MODAL OVERLAY ================= */
+
+.admin-modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    z-index:999;
+    padding:20px;
+}
+
+/* ================= MODAL ================= */
+
+.admin-modal{
+
+    width:800px;
+    max-width:100%;
+
+    max-height:90vh;
+    overflow-y:auto;
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:35px;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.2);
+
+    animation:modalShow 0.25s ease;
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes modalShow{
+
+    from{
+        opacity:0;
+        transform:translateY(20px) scale(0.95);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+
+}
+
+/* ================= HEADER ================= */
+
+.modal-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:30px;
+    padding-bottom:20px;
+
+    border-bottom:1px solid #eee;
+}
+
+.modal-header h3{
+
+    font-size:34px;
+    font-weight:700;
+    color:#222;
+}
+
+.close-x{
+
+    border:none;
+    background:none;
+
+    font-size:36px;
+    cursor:pointer;
+
+    color:#888;
+
+    transition:0.2s;
+}
+
+.close-x:hover{
+    color:#ef4444;
+    transform:rotate(90deg);
+}
+
+/* ================= FORM ================= */
+
+.admin-form{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:24px;
+}
+
+/* full width */
+
+.form-group.full-width{
+    grid-column:1 / -1;
+}
+
+/* ================= FORM GROUP ================= */
+
+.form-group{
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.form-group label{
+
+    font-size:17px;
+    font-weight:600;
+    color:#333;
+}
+
+/* ================= INPUT ================= */
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+
+    width:100%;
+
+    padding:14px 16px;
+
+    border:1px solid #ddd;
+
+    border-radius:14px;
+
+    font-size:16px;
+
+    outline:none;
+
+    transition:0.25s;
+
+    background:#fafafa;
+}
+
+.form-group textarea{
+
+    resize:none;
+    min-height:140px;
+}
+
+/* ================= FOCUS ================= */
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+
+    border-color:#4f46e5;
+
+    background:white;
+
+    box-shadow:
+        0 0 0 4px rgba(79,70,229,0.1);
+}
+
+/* ================= BUTTONS ================= */
+
+.modal-actions{
+
+    grid-column:1 / -1;
+
+    display:flex;
+    justify-content:flex-end;
+
+    gap:18px;
+
+    margin-top:20px;
+}
+/* cancel */
+
+.btn-cancel{
+
+    padding:14px 34px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#e5e7eb;
+
+    color:#444;
+
+    font-size:17px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.25s;
+}
+
+.btn-cancel:hover{
+    background:#d1d5db;
+}
+
+/* save */
+
+.btn-save{
+
+    padding:14px 34px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#ef4444;
+
+    color:white;
+
+    font-size:17px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.25s;
+}
+
+.btn-save:hover{
+
+    background:#dc2626;
+
+    transform:translateY(-2px);
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:768px){
+
+    .admin-modal{
+        width:100%;
+        padding:25px;
+    }
+
+    .admin-form{
+        grid-template-columns:1fr;
+    }
+
+}
+
+.btn-detail {
+    border:#151313;
+    font-size: 18px;
+}

@@ -1,0 +1,122 @@
+/* TỔNG THỂ */
+.product-detail-container {
+    padding: 30px 10%;
+    background-color: #f1f3f7; /* Màu nền xám nhạt hiện đại */
+    min-height: 100vh;
+}
+
+.detail-wrapper {
+    display: flex;
+    gap: 40px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* CỘT TRÁI - ẢNH */
+.detail-left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.main-image-card {
+    width: 100%;
+    position: sticky;
+    top: 20px;
+}
+
+.main-image-card img {
+    width: 100%;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+/* CỘT PHẢI - THÔNG TIN */
+.detail-right {
+    flex: 1;
+}
+
+.detail-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.detail-price-box {
+    margin: 20px 0;
+    padding: 15px;
+    background: #fef2f2;
+    border-radius: 8px;
+}
+
+.detail-curr-price {
+    font-size: 28px;
+    color: #d70018; /* Màu đỏ giá tiền */
+    font-weight: 800;
+}
+
+/* NÚT BẤM */
+.btn-add-to-cart {
+    width: 100%;
+    padding: 15px;
+    background: #d70018;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 25px;
+    transition: 0.2s;
+}
+
+.btn-add-to-cart:hover {
+    background: #c20016;
+    transform: scale(1.01);
+}
+
+/* BẢNG THÔNG SỐ - PHẦN QUAN TRỌNG NHẤT TRONG ẢNH CỦA BẠN */
+.specs-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.specs-section h3 {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    margin: 0;
+    font-size: 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.specs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.specs-table tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+.specs-table td {
+    padding: 12px 15px;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f1f1;
+    line-height: 1.5;
+}
+
+.spec-label {
+    width: 35%;
+    color: #666;
+    font-weight: 600;
+}
+
+.spec-value {
+    color: #333;
+}

@@ -1,0 +1,60 @@
+/* src/index.css */
+:root {
+    --primary-red: #e66363;
+    --dark-red: #d45555;
+    --bg-blue: #cde9f0;
+    --white: #ffffff;
+    --text-dark: #333333;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background-color: var(--bg-blue);
+    font-family: 'Inter', sans-serif; /* */
+    overflow-x: hidden;
+}
+
+.page-container {
+    padding: 40px 60px;
+    max-width: 1440px; 
+    margin: 0 auto;
+}
+
+.content-layout {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start; 
+}
+
+.page-title {
+    font-size: 40px;
+    margin: 20px 0 30px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.sidebar { width: 300px; flex-shrink: 0; }
+
+/* Trong src/index.css */
+
+.product-area {
+    flex: 1; 
+    min-width: 0; 
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 20px;
+    width: 100%;
+}
+
+.product-card {
+    background: var(--white);
+    height: 350px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(0,0,0,0.05); 
+}

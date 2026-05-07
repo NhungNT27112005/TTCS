@@ -1,0 +1,66 @@
+
+.main-footer {
+    background-color: var(--white); /* */
+    padding: 50px 0 20px 0;
+    margin-top: 50px;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 60px;
+    gap: 40px;
+}
+
+.footer-column { flex: 1; }
+
+.footer-logo {
+    font-family: 'Joti One', cursive;
+    color: var(--primary-red); /* */
+    font-size: 35px;
+    margin-bottom: 15px;
+}
+
+.footer-title {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--text-dark);
+}
+
+.footer-column ul { list-style: none; }
+.footer-column ul li { margin-bottom: 10px; }
+.footer-column ul li a {
+    text-decoration: none;
+    color: #666;
+    transition: 0.3s;
+}
+
+.footer-column ul li a:hover { color: var(--primary-red); }
+
+.footer-column p {
+    color: #666;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    font-size: 20px;
+    margin-top: 20px;
+    color: var(--text-dark);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 30px;
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    color: #888;
+    font-size: 14px;
+}

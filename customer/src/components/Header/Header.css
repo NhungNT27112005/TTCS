@@ -1,0 +1,131 @@
+/* Header tổng quát */
+.main-header {
+    background: var(--white); /* */
+    padding: 10px 60px; /* */
+    box-shadow: var(--shadow); /* */
+    width: 100%;
+    position: sticky; 
+    top: 0;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+/* Phần trên của Header (Logo - Search - Icons) */
+.header-top {
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; 
+}
+
+.brand-logo {
+    font-family: 'Joti One', cursive;
+    color: var(--primary-red); 
+    font-size: 60px; 
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+/* Thanh tìm kiếm */
+.search-bar {
+    position: relative;
+    flex: 0 1 450px; 
+    margin: 0 20px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 25px; 
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 16px;
+}
+
+.search-bar i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+/* Các Icon chức năng bên phải */
+.header-icons {
+    display: flex; 
+    gap: 25px; 
+    font-size: 24px;
+    color: var(--text-dark); 
+}
+
+.header-icons a {
+    color: inherit;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.header-icons a:hover {
+    color: var(--primary-red); 
+}
+
+.notification-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+/* Thanh điều hướng danh mục (Sub-nav) */
+.sub-nav {
+    display: flex; 
+    justify-content: center;
+    gap: 40px; /* */
+    margin-top: 15px;
+    padding-bottom: 10px;
+}
+
+.sub-nav a {
+    text-decoration: none;
+    color: var(--text-dark); 
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.sub-nav a i {
+    font-size: 20px;
+}
+
+
+.user-control {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-left: 15px;
+}
+
+.user-name {
+    font-size: 15px;
+    font-weight: 600;
+    margin-left: 10px;
+    color: var(--text-dark);
+}
+
+.btn-logout {
+    background: #f5f5f5;
+    border: 1px solid #eee;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: 0.2s;
+    line-height: 1;
+}
+
+.btn-logout:hover {
+    background: var(--primary-red);
+    color: white;
+    border-color: var(--primary-red);
+    transform: scale(1.05);
+}

@@ -1,0 +1,105 @@
+/* src/pages/Cart/Cart.css */
+.cart-container {
+    padding: 40px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cart-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start; /* */
+}
+
+.cart-items-section { flex: 2; }
+.cart-summary { flex: 1; position: sticky; top: 100px; }
+
+/* Thẻ sản phẩm trong giỏ */
+.cart-item-card {
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    box-shadow: var(--shadow); /* */
+    gap: 20px;
+}
+
+.item-img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; }
+.item-info { flex: 1; }
+.item-info h3 { font-size: 18px; margin-bottom: 5px; }
+.item-price { color: var(--primary-red); font-weight: bold; }
+
+/* Bộ tăng giảm số lượng */
+.item-quantity {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f5f5f5;
+    padding: 5px 15px;
+    border-radius: 10px;
+}
+.item-quantity button { border: none; background: none; cursor: pointer; font-size: 18px; }
+
+.btn-remove {
+    background: none;
+    border: none;
+    color: #ff4d4d;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-remove:hover { transform: scale(1.2); }
+
+/* Bảng tóm tắt thanh toán */
+.summary-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: var(--shadow);
+}
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+}
+.total { font-size: 20px; font-weight: bold; margin-top: 20px; }
+.final-price { color: var(--primary-red); }
+
+.btn-checkout {
+    width: 100%;
+    background-color: var(--primary-red); /* */
+    color: var(--white);
+    border: none;
+    padding: 15px;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+.btn-checkout:hover { background-color: var(--dark-red); }
+.product-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: #e66363; /* Màu đỏ của theme */
+    cursor: pointer;
+}
+
+.select-all-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: white;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    font-weight: 600;
+}
+
+.cart-item-card.selected {
+    border: 1px solid #ffe3e3;
+    background-color: #fffafb;
+}
