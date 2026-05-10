@@ -10,7 +10,8 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/products');
+        const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+        const response = await axios.get(`${baseUrl}/products`);
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);

@@ -13,7 +13,8 @@ const ProductDetail = () => {
     useEffect(() => {
     const fetchProduct = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/products/${id}`);
+const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+        const response = await axios.get(`${baseUrl}/products/${id}`);
             const data = response.data;
 
             // Kiểm tra nếu có dữ liệu
@@ -55,7 +56,8 @@ const ProductDetail = () => {
             quantity: 1 
         };
 
-        const response = await axios.post("http://localhost:3000/cart/add", payload);
+        const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+        const response = await axios.post(`${baseUrl}/cart/add`, payload);
         
         if (response.status === 200) {
             alert("Thêm vào giỏ hàng thành công! 🛒");
@@ -112,7 +114,7 @@ const ProductDetail = () => {
       </div>
     </div>
     <div className="detail-suggestion-section" style={{ marginTop: '50px' }}>
-            <ProductSuggestion />
+            <ProductSuggestion productId={id} />
     </div>
   </div>
 );

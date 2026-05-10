@@ -1,22 +1,29 @@
 import express from "express";
 import cors from "cors";
+import crypto from "crypto";
 import { connectDB } from "./db.js";
-import { handleChat } from "./chatbot.js";
+import aiRoutes from "./aiRoutes.js";
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(aiRoutes);
+
+const hashPassword = (password) => {
+  return crypto.createHash('sha256').update(password).digest('hex');
+};
 
 // --- 1. API ĐĂNG NHẬP 
 app.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
         const pool = await connectDB();
+        const hashedPassword = hashPassword(password);
 
         // 1. Chỉ cần tìm user theo Email và Password
         // Nhớ dùng đúng tên bảng 'Users' (có chữ s) và cột 'password_hash'
         const result = await pool.request()
             .input('email', email)
-            .input('password', password)
+            .input('password', hashedPassword)
             .query(`
                 SELECT user_id, username, email, role_id 
                 FROM dbo.Users 
@@ -48,6 +55,15 @@ app.post("/login", async (req, res) => {
 app.post("/register", async (req, res) => {
     try {
         const { username, email, password } = req.body;
+
+        if (!username || !email || !password) {
+            return res.status(400).json({ message: "Vui lòng điền đầy đủ tên, email và mật khẩu." });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({ message: "Mật khẩu phải có ít nhất 6 ký tự." });
+        }
+
         const pool = await connectDB();
 
         // 1. Kiểm tra email đã tồn tại chưa
@@ -60,44 +76,45 @@ app.post("/register", async (req, res) => {
         }
 
         // 2. Chuẩn bị dữ liệu đăng ký
-        const newUserId = 'U' + Date.now().toString().slice(-10); 
-        const defaultRoleId = 1; 
+        const newUserId = 'U' + Date.now().toString().slice(-10);
+        const defaultRoleId = 1;
+        const hashedPassword = hashPassword(password);
 
         // 3. Thực hiện chèn dữ liệu với đầy đủ các cột NOT NULL
         await pool.request()
             .input('userId', newUserId)
             .input('username', username)
             .input('email', email)
-            .input('passwordHash', password)
+            .input('passwordHash', hashedPassword)
             .input('roleId', defaultRoleId)
             .input('phone', '')    // Gửi chuỗi rỗng thay vì NULL
             .input('address', '')  // Gửi chuỗi rỗng thay vì NULL
             .query(`
                 INSERT INTO dbo.Users (
-                    user_id, 
-                    username, 
-                    email, 
-                    password_hash, 
-                    role_id, 
-                    phone_number, 
-                    default_address, 
+                    user_id,
+                    username,
+                    email,
+                    password_hash,
+                    role_id,
+                    phone_number,
+                    default_address,
                     is_active
-                ) 
+                )
                 VALUES (
-                    @userId, 
-                    @username, 
-                    @email, 
-                    @passwordHash, 
-                    @roleId, 
-                    @phone, 
-                    @address, 
+                    @userId,
+                    @username,
+                    @email,
+                    @passwordHash,
+                    @roleId,
+                    @phone,
+                    @address,
                     1
                 )
             `);
 
         res.status(201).json({ message: "Tạo tài khoản E-Tech thành công!" });
     } catch (err) {
-        console.error("Lỗi đăng ký chi tiết:", err.message);
+        console.error("Lỗi đăng ký chi tiết:", err);
         res.status(500).json({ message: "Lỗi hệ thống: " + err.message });
     }
 });
@@ -292,24 +309,7 @@ app.get("/cart/:userId", async (req, res) => {
   }
 });
 
-// --- 8. CHATBOT ---
-// server.js
-app.post("/chat", async (req, res) => {
-  try {
-    const pool = await connectDB();
-    const { message, user } = req.body; // Nhận tin nhắn và thông tin user đăng nhập
-
-    // Truyền cả pool và user vào hàm xử lý
-    const result = await handleChat(pool, message, user);
-    
-    res.json({ success: true, data: result });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Chatbot đang bảo trì" });
-  }
-});
-
-const PORT = 3000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`>>> E-TECH SERVER IS RUNNING AT: http://localhost:${PORT}`);
 });

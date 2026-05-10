@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import crypto from 'crypto';
 import { connectDB } from "../db.js";  
 const routes = express.Router();
 routes.use(express.json());
@@ -9,6 +10,7 @@ routes.post("/login", async (req, res) => {
     try {
 
         const { email, password } = req.body;
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
         const pool = await connectDB();
 

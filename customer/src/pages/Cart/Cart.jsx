@@ -21,7 +21,8 @@ const Cart = () => {
             }
             const userData = JSON.parse(storedUser);
 
-            const response = await axios.get(`http://localhost:3000/cart/${userData.user_id}`);
+            const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+            const response = await axios.get(`${baseUrl}/cart/${userData.user_id}`);
             const formattedItems = response.data.map(item => ({
                 id: item.cart_id,
                 productId: item.product_id,

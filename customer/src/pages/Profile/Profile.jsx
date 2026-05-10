@@ -19,8 +19,9 @@ const Profile = () => {
 
         const userData = JSON.parse(storedUser);
         const userId = userData.user_id; 
+        const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
-        const response = await axios.get(`http://localhost:3000/profile/${userId}`);
+        const response = await axios.get(`${baseUrl}/profile/${userId}`);
         setUser(response.data);
         setEditData({
           phone_number: response.data.phone_number || '',
@@ -38,7 +39,8 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put(`http://localhost:3000/profile/${user.user_id}`, editData);
+      const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+      await axios.put(`${baseUrl}/profile/${user.user_id}`, editData);
       alert("Cập nhật thành công!");
       setIsEditing(false);
       setUser({ ...user, ...editData });

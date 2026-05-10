@@ -7,7 +7,8 @@ const NotificationDropdown = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch("http://localhost:3000/notifications");
+        const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+        const response = await fetch(`${baseUrl}/notifications`);
         const data = await response.json();
         setNotifications(data);
       } catch (error) {

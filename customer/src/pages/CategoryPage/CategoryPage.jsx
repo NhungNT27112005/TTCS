@@ -22,7 +22,8 @@ const CategoryPage = () => {
             setLoading(true); 
             try {
                 const catId = catMapping[slug] || 1;
-                const response = await axios.get(`http://localhost:3000/category/${catId}`);
+                const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+                const response = await axios.get(`${baseUrl}/category/${catId}`);
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);

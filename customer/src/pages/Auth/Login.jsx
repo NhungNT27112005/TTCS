@@ -13,7 +13,8 @@ const Login = () => {
         
        try {
             // Gửi yêu cầu đăng nhập lên Backend
-            const response = await axios.post("http://localhost:3000/login", {
+            const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+            const response = await axios.post(`${baseUrl}/login`, {
                 email: email,
                 password: password
             });

@@ -18,7 +18,8 @@ const SearchPage = () => {
             setLoading(true);
             try {
                 // Gọi API search bạn đã viết ở Backend
-                const response = await axios.get(`http://localhost:3000/search?q=${encodeURIComponent(query)}`);
+                const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+                const response = await axios.get(`${baseUrl}/search?q=${encodeURIComponent(query)}`);
                 setResults(response.data);
             } catch (error) {
                 console.error("Lỗi tìm kiếm:", error);
