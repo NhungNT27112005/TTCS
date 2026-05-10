@@ -87,7 +87,7 @@ const Header = () => {
                 <NavLink to="/category/dien-thoai"><i className="fa-solid fa-mobile-screen"></i><span>Điện thoại</span></NavLink>
                 <NavLink to="/category/laptop"><i className="fa-solid fa-laptop"></i><span>Laptop</span></NavLink>
                 <NavLink to="/category/tai-nghe"><i className="fa-solid fa-headphones"></i><span>Tai nghe</span></NavLink>
-                <NavLink to="/category/the-nho"><i className="fa-solid fa-sd-card"></i><span>Thẻ nhớ</span></NavLink>
+                <NavLink to="/category/the-nho"><i className="fa-solid fa-sd-card"></i><span>Sạc</span></NavLink>
             </nav>
         </header>
     );

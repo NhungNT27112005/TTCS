@@ -84,7 +84,9 @@
 .specs-section {
     border: 1px solid #e5e7eb;
     border-radius: 10px;
-    overflow: hidden;
+    margin-top: 20px;
+    background: #fff;
+    overflow: hidden; /* Để bo góc hoạt động chuẩn */
 }
 
 .specs-section h3 {
@@ -119,4 +121,84 @@
 
 .spec-value {
     color: #333;
+}
+
+/* Tùy chỉnh phần Header của Specs để bấm được */
+.specs-header {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background 0.3s;
+}
+
+.specs-header:hover {
+    background: #edf2f7;
+}
+
+.specs-header h3 {
+    border-bottom: none !important; /* Bỏ border cũ */
+    padding: 0 !important;
+}
+
+/* Biểu tượng mũi tên xoay */
+.arrow-icon {
+    transition: transform 0.3s ease;
+    color: #666;
+}
+
+.arrow-icon.rotate {
+    transform: rotate(180deg);
+}
+
+/* Phần nội dung ẩn/hiện */
+.specs-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+}
+
+/* Khi mở ra */
+.specs-section.is-open .specs-content {
+    max-height: 400px; /* Cố định chiều cao cửa sổ xem */
+    overflow-y: auto;  /* Hiện thanh cuộn khi nội dung dài */
+    border-top: 1px solid #f1f1f1;
+}
+
+.specs-table td {
+    padding: 15px; /* Tăng padding cho thoáng */
+}
+
+/* Thêm hiệu ứng cho viền section */
+.specs-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-top: 20px;
+    transition: box-shadow 0.3s;
+}
+
+.specs-section.is-open {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Tùy chỉnh thanh cuộn cho đẹp hơn */
+.specs-content::-webkit-scrollbar {
+    width: 6px;
+}
+.specs-content::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+}
+
+.specs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.specs-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f9f9f9;
 }

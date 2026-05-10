@@ -27,7 +27,7 @@ const Footer = () => {
             <li><Link to="/category/dien-thoai">Điện thoại</Link></li>
             <li><Link to="/category/laptop">Laptop</Link></li>
             <li><Link to="/category/tai-nghe">Tai nghe</Link></li>
-            <li><Link to="/category/the-nho">Thẻ nhớ</Link></li>
+            <li><Link to="/category/the-nho">Sạc</Link></li>
           </ul>
         </div>
 

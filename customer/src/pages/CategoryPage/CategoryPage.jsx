@@ -46,7 +46,7 @@ const CategoryPage = () => {
         'dien-thoai': 'Điện thoại',
         'laptop': 'Laptop',
         'tai-nghe': 'Tai nghe',
-        'the-nho': 'Thẻ nhớ'
+        'the-nho': 'Sạc'
     };
 
 

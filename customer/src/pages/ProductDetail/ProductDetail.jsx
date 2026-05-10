@@ -9,6 +9,7 @@ const ProductDetail = () => {
     // 2. Lấy ID từ thanh địa chỉ URL (ví dụ: /product/41 thì id = "41")
     const { id } = useParams();
     const [product, setProduct] = useState(null);
+    const [isSpecsOpen, setIsSpecsOpen] = useState(false); //
 
     useEffect(() => {
     const fetchProduct = async () => {
@@ -98,18 +99,24 @@ const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
           <i className="fa-solid fa-cart-shopping"></i> THÊM VÀO GIỎ HÀNG
         </button>
 
-        <div className="specs-section">
-          <h3><i className="fa-solid fa-gear"></i> Thông số kỹ thuật</h3>
-          <table className="specs-table">
-            <tbody>
-              {Object.entries(product.specs || {}).map(([key, value]) => (
-                <tr key={key}>
-                  <td className="spec-label">{key}</td>
-                  <td className="spec-value">{String(value)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className={`specs-section ${isSpecsOpen ? 'is-open' : ''}`}>
+            <div className="specs-header" onClick={() => setIsSpecsOpen(!isSpecsOpen)}>
+                <h3><i className="fa-solid fa-gear"></i> Thông số kỹ thuật</h3>
+                <i className={`fa-solid fa-chevron-down arrow-icon ${isSpecsOpen ? 'rotate' : ''}`}></i>
+            </div>
+            
+            <div className="specs-content">
+                <table className="specs-table">
+                    <tbody>
+                        {Object.entries(product.specs || {}).map(([key, value]) => (
+                            <tr key={key}>
+                                <td className="spec-label">{key}</td>
+                                <td className="spec-value">{String(value)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
       </div>
     </div>
