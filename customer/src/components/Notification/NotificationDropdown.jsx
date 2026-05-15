@@ -25,7 +25,7 @@ const NotificationDropdown = () => {
           <div key={n.id} className="notif-item">
             <div className="notif-banner">
               <i className="fa-solid fa-gift gift-icon"></i>
-              <span>{n.text}</span>
+              <span>{n.message}</span>
             </div>
           </div>
         ))}

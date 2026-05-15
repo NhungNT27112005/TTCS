@@ -8,6 +8,9 @@ import Payment from './pages/Cart/Payment';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import Chatbot from './components/Chatbot/Chatbot';
+import ProductSuggestion from './pages/ProductSuggestion/ProductSuggestion';
+import Notification from './components/Notification/NotificationDropdown';
+
 // Import Pages
 import Home from './pages/Home/Home';
 import SearchPage from './pages/Search/SearchPage';

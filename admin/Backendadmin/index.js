@@ -7,6 +7,7 @@ import orderRoutes from './routes/order.js';
 import dashboardRoutes from './routes/dashboard.js';
 import categoryRoutes from './routes/category.js';
 import userRoutes from './routes/user.js';
+import loginRoutes from './routes/login.js';
 
 const app = express();
 app.use(express.json());
@@ -17,6 +18,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/stats", dashboardRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/login", loginRoutes);
 
 connectDB();
 

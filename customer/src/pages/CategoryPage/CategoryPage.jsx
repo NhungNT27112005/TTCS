@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import './CategoryPage.css';
-import ProductSuggestion from '../../components/ProductSuggestion/ProductSuggestion';
 
 
 const CategoryPage = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Home.css';
-import ProductSuggestion from '../../components/ProductSuggestion/ProductSuggestion';
+import ProductSuggestion from '../ProductSuggestion/ProductSuggestion';
 import { Link } from 'react-router-dom';
 
 const Home = () => {

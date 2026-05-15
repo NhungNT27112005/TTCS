@@ -2,7 +2,6 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProductSuggestion from '../../components/ProductSuggestion/ProductSuggestion';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -110,9 +109,6 @@ const ProductDetail = () => {
           </table>
         </div>
       </div>
-    </div>
-    <div className="detail-suggestion-section" style={{ marginTop: '50px' }}>
-            <ProductSuggestion />
     </div>
   </div>
 );

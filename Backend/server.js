@@ -2,9 +2,14 @@ import express from "express";
 import cors from "cors";
 import { connectDB } from "./db.js";
 import { handleChat } from "./chatbot.js";
+import productRoutes from "./routes/ProductSuggest.js";
+import noticationRoutes from "./routes/Notification.js";
+
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use("/product-suggest", productRoutes);
+app.use("/notifications", noticationRoutes);
 
 // --- 1. API ĐĂNG NHẬP 
 app.post("/login", async (req, res) => {
@@ -12,8 +17,6 @@ app.post("/login", async (req, res) => {
         const { email, password } = req.body;
         const pool = await connectDB();
 
-        // 1. Chỉ cần tìm user theo Email và Password
-        // Nhớ dùng đúng tên bảng 'Users' (có chữ s) và cột 'password_hash'
         const result = await pool.request()
             .input('email', email)
             .input('password', password)
@@ -31,7 +34,7 @@ app.post("/login", async (req, res) => {
                 message: "Đăng nhập thành công!",
                 user: {
                     user_id: user.user_id,
-                    username: user.username, // Trong DB của bạn là username, không phải full_name
+                    username: user.username, 
                     email: user.email,
                     role: user.role_id === 2 ? 'admin' : 'customer'
                 }

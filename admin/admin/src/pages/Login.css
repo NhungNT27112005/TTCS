@@ -13,12 +13,11 @@
 .admin-login-box {
     background: #ffffff;
     width: 100%;
-    max-width: 400px;
-    padding: 40px;
+    max-width: 550px;
+    padding: 50px;
     border-radius: 16px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
-
 /* Header của form */
 .admin-login-header {
     text-align: center;
