@@ -1,0 +1,87 @@
+/* =====================================
+   ADMIN USERS
+===================================== */
+
+.admin-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.admin-search {
+    width: 260px;
+    padding: 10px 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.admin-search:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* =====================================
+   TABLE — chỉ style td/tr, KHÔNG override thead
+   (thead đã được Admin.css xử lý đúng)
+===================================== */
+
+/* ⭐ Đã xóa .admin-table thead { background: #1e293b } ở đây
+   để tránh xung đột với Admin.css — chỉ giữ 1 nơi định nghĩa */
+
+/* =====================================
+   BUTTONS
+===================================== */
+
+.btn-active {
+    background: #dcfce7;
+    color: #166534;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.btn-block {
+    background: #fee2e2;
+    color: #991b1b;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.btn-delete {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 13px;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+}
+
+/* =====================================
+   SELECT trong bảng
+===================================== */
+
+.admin-table select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #c49a9a;
+    outline: none;
+    cursor: pointer;
+    font-size: 13px;
+}

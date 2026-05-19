@@ -22,8 +22,9 @@ const Header = () => {
     // HÀM XỬ LÝ ĐĂNG XUẤT
     const handleLogout = () => {
         if (window.confirm("Bạn có chắc chắn muốn đăng xuất?")) {
-            localStorage.removeItem('user'); 
-            navigate('/login');              
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            navigate("/login");              
             window.location.reload();        
         }
     };
@@ -49,7 +50,8 @@ const Header = () => {
 
                 {/* Các Icon chức năng */}
                 <div className="header-icons">
-                    <Link title="Trang chủ" to="/"><i className="fa-solid fa-house"></i></Link>
+                    <Link title="Lịch sử đơn hàng" to="/profile/orders">
+                        <i className="fa-solid fa-clock-rotate-left"></i></Link>
                     
                     {/* Khu vực thông báo */}
                     <div className="notification-wrapper" onClick={() => setShowNotif(!showNotif)}>

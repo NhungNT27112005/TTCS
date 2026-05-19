@@ -1,53 +1,44 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'; 
+import { Link } from 'react-router-dom';
+import userService from '../../services/userService';  
 import './Auth.css';
 
 const Login = () => {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState(''); 
-    const navigate = useNavigate();
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        
-       try {
-            // Gửi yêu cầu đăng nhập lên Backend
-            const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
-            const response = await axios.post(`${baseUrl}/login`, {
-                email: email,
-                password: password
-            });
+        setLoading(true);
+
+        try {
+            // 🎯 ỦY QUYỀN TRUYỀN TIN CHOuserService XỬ LÝ KHÉP KÍN
+            const response = await userService.loginApi(email, password);
+            
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("user", JSON.stringify(response.data.user));
 
             if (response.status === 200) {
                 const userData = response.data.user;
+                alert(`Chào mừng ${userData.username || userData.email}!`);
 
-                // 1. Lưu thông tin User vào localStorage
-                // Quan trọng: Lưu cả user_id để dùng cho chức năng Giỏ hàng sau này
-                localStorage.setItem('user', JSON.stringify(userData));
-
-                alert(`Chào mừng ${userData.full_name || userData.email}!`);
-
-                // 2. Điều hướng dựa trên quyền (role)
                 if (userData.role === 'admin') {
-                    navigate('/admin');
+                    window.location.href = '/admin';
                 } else {
-                    navigate('/');
+                    window.location.href = '/';
                 }
-                
-                // Reload để Header cập nhật trạng thái đã đăng nhập
-                window.location.reload(); 
             }
         } catch (error) {
-            // Hiển thị lỗi từ Backend (401: Sai pass, 500: Lỗi server)
             const message = error.response?.data?.message || "Lỗi kết nối đến máy chủ!";
             alert(message);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="auth-container">
-            {/* Nút quay về trang chủ nhanh */}
             <Link to="/" className="back-to-home">
                 <i className="fa-solid fa-arrow-left"></i> Về trang chủ
             </Link>
@@ -60,39 +51,39 @@ const Login = () => {
 
                 <div className="input-group">
                     <label>Email</label>
-                    <input 
-                        type="email" 
-                        placeholder="Nhập email của bạn..." 
+                    <input
+                        type="email"
+                        placeholder="Nhập email của bạn..."
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        required 
+                        required
                     />
                 </div>
 
                 <div className="input-group">
                     <label>Mật khẩu</label>
-                    <input 
-                        type="password" 
-                        placeholder="Nhập mật khẩu..." 
+                    <input
+                        type="password"
+                        placeholder="Nhập mật khẩu..."
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required 
+                        required
                     />
                 </div>
 
                 <div className="auth-options">
                     <label><input type="checkbox" /> Ghi nhớ tôi</label>
-                        <>  </>
-                   
                 </div>
 
-                <button type="submit" className="btn-auth">Đăng nhập</button>
-                 <Link to="/forgot-password">Quên mật khẩu?</Link>
+                <button type="submit" className="btn-auth" disabled={loading}>
+                    {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                </button>
+
+                <Link to="/forgot-password">Quên mật khẩu?</Link>
+
                 <p className="auth-switch">
                     Bạn mới biết đến E-Tech? <Link to="/register">Đăng ký ngay</Link>
                 </p>
-                
-                
             </form>
         </div>
     );

@@ -1,35 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import productService from '../../services/productService'; // 🎯 IMPORT BƯU TÁ PRODUCT
 import './Home.css';
 import ProductSuggestion from '../../components/ProductSuggestion/ProductSuggestion';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const userData = JSON.parse(localStorage.getItem('user'));
+  const [visibleCount, setVisibleCount] = useState(20); 
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
-        const response = await axios.get(`${baseUrl}/products`);
+        // 🎯 ỦY QUYỀN TRUYỀN TIN QUA SERVICE
+        const response = await productService.getAllProductsApi();
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
-
     fetchProducts();
   }, []);
 
-  // Hàm xử lý hiển thị thêm sản phẩm
-  const [visibleCount, setVisibleCount] = useState(20); // Số lượng sản phẩm hiển thị ban đầu
   const handleShowMore = () => {
     setVisibleCount((prevCount) => prevCount + 10); 
   };
 
   return (
     <main className="home-container">
-      {/* 1. Hero Section - Banner quảng cáo */}
       <section className="hero-section">
         <div className="hero-text">
           <h2>Thế giới thiết bị điện tử thông minh<br /> E-Tech</h2>
@@ -39,8 +37,6 @@ const Home = () => {
           <img src="/banner.png" alt="Banner E-Tech" className="banner-img" />
         </div>
       </section>
-    
-    {/* 1.2. Khám phá sản phẩm */}
 
       <section className="product-section">
         <h2 className="section-title">Khám phá sản phẩm</h2>
@@ -56,7 +52,6 @@ const Home = () => {
             ))}
         </div>
 
-        {/* nút xem thêm  */}
         {visibleCount < products.length && (
           <div className="see-more-container">
             <button className="btn-see-more" onClick={handleShowMore}>
@@ -66,40 +61,25 @@ const Home = () => {
         )}
       </section>
 
- {/* 2. Promo Section - Khuyến mãi đặc biệt */}
-<section className="promo-section">
-  <div className="promo-card">
-    {/* Tiêu đề có icon phía trước */}
-    <div className="promo-header">
-      <i className="fa-solid fa-percent promo-icon"></i>
-      <span className="promo-text">Khuyến mãi đặc biệt</span>
-    </div>
+      <section className="promo-section">
+        <div className="promo-card">
+          <div className="promo-header">
+            <i className="fa-solid fa-percent promo-icon"></i>
+            <span className="promo-text">Khuyến mãi đặc biệt</span>
+          </div>
+          <div className="promo-content">
+            <div className="promo-item"><span className="promo-label">Giảm đến</span><span className="promo-value">50%</span></div>
+            <div className="promo-divider"></div>
+            <div className="promo-item"><span className="promo-value">25%</span></div>
+            <div className="promo-divider"></div>
+            <div className="promo-item"><span className="promo-value">20%</span></div>
+          </div>
+        </div>
+      </section>
 
-    {/* Danh sách các mức giảm giá */}
-    <div className="promo-content">
-      <div className="promo-item">
-        <span className="promo-label">Giảm đến</span>
-        <span className="promo-value">50%</span>
-      </div>
-      
-      <div className="promo-divider"></div> {/* Đường kẻ dọc */}
-      
-      <div className="promo-item">
-        <span className="promo-value">25%</span>
-      </div>
-      
-      <div className="promo-divider"></div>
-      
-      <div className="promo-item">
-        <span className="promo-value">20%</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-      {/* 3. Product Section - Sản phẩm gợi ý */}
       <section className="product-section">
-        <ProductSuggestion />
+        <h2 className="section-title">Gợi ý dành riêng cho bạn</h2>
+        <ProductSuggestion userId={userData?.user_id} />
       </section>
     </main>
   );

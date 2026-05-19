@@ -211,6 +211,11 @@
 }
 
 /* Giá tiền */
+.product-card-link {
+    text-decoration: none !important; /* Xóa gạch chân */
+    color: inherit !important;       /* Lấy màu từ thẻ cha, không lấy màu xanh mặc định */
+    display: block;                  /* Giúp toàn bộ khối card trở thành link, nhìn đẹp hơn */
+}
 .product-card .price {
     font-size: 20px;
     font-weight: 700;
@@ -244,7 +249,8 @@
     background-color: #ff7675;
     color: rgb(146, 38, 38);
     box-shadow: 0 5px 15px rgba(255, 118, 117, 0.3);
-    transform: translateY(-2px);
+    /* transform: translateY(-2px); */
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 .btn-see-more i {

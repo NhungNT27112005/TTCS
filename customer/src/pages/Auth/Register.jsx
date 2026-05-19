@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Import axios
+import userService from '../../services/userService'; 
 import './Auth.css'; 
 
 const Register = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        username: '', // Đã đổi từ fullName thành username
+        username: '', 
         email: '',
         password: '',
         confirmPassword: ''
     });
 
-    // Hàm cập nhật state khi nhập liệu
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -20,26 +19,25 @@ const Register = () => {
         });
     };
 
-    const handleRegister = async (e) => { // Thêm async ở đây
+    const handleRegister = async (e) => {
         e.preventDefault();
         
-        // Kiểm tra mật khẩu khớp nhau
         if(formData.password !== formData.confirmPassword) {
             alert("Mật khẩu nhập lại không khớp!");
             return;
         }
 
         try {
-            const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
-            const response = await axios.post(`${baseUrl}/register`, {
-                username: formData.username,
-                email: formData.email,
-                password: formData.password
-            });
+            // 🎯 ỦY QUYỀN TRUYỀN TIN CHO userService XỬ LÝ KHÉP KÍN
+            const response = await userService.registerApi(
+                formData.username,
+                formData.email,
+                formData.password
+            );
 
             if (response.status === 201) {
                 alert(response.data.message);
-                navigate('/login'); // Đăng ký xong chuyển sang trang đăng nhập
+                navigate('/login');
             }
         } catch (error) {
             const msg = error.response?.data?.message || "Lỗi khi đăng ký tài khoản!";
