@@ -1,4 +1,5 @@
 import { connectDB } from '../config/db.js';
+import sql from 'mssql';
 
 class CartDAO {
     // Kiểm tra xem sản phẩm đã có trong giỏ hàng của user chưa
@@ -6,8 +7,8 @@ class CartDAO {
         const pool = await connectDB();
         const result = await pool
             .request()
-            .input("userId", userId)
-            .input("productId", productId)
+            .input("userId", sql.VarChar(20), userId)
+            .input("productId", sql.Int, productId)
             .query("SELECT * FROM dbo.Carts WHERE user_id = @userId AND product_id = @productId");
         return result.recordset;
     }
@@ -17,9 +18,9 @@ class CartDAO {
         const pool = await connectDB();
         await pool
             .request()
-            .input("userId", userId)
-            .input("productId", productId)
-            .input("qty", quantity)
+            .input("userId", sql.VarChar(20), userId)
+            .input("productId", sql.Int, productId)
+            .input("qty", sql.Int, quantity)
             .query("UPDATE dbo.Carts SET quantity = quantity + @qty WHERE user_id = @userId AND product_id = @productId");
     }
 
@@ -28,9 +29,9 @@ class CartDAO {
         const pool = await connectDB();
         await pool
             .request()
-            .input("userId", userId)
-            .input("productId", productId)
-            .input("qty", quantity)
+            .input("userId", sql.VarChar(20), userId)
+            .input("productId", sql.Int, productId)
+            .input("qty", sql.Int, quantity)
             .query("INSERT INTO dbo.Carts (user_id, product_id, quantity) VALUES (@userId, @productId, @qty)");
     }
 
@@ -38,7 +39,7 @@ class CartDAO {
     async getCartByUserId(userId) {
         const pool = await connectDB();
         const result = await pool.request()
-            .input("userId", userId)
+            .input("userId", sql.VarChar(20), userId)
             .query(`
                 SELECT c.cart_id, c.quantity, p.product_name, 
                        p.unit_price, p.thumbnail_url AS image_url, p.product_id
@@ -53,8 +54,8 @@ class CartDAO {
     async removeItemFromCart(userId, productId) {
         const pool = await connectDB();
         await pool.request()
-            .input("userId", userId)
-            .input("productId", productId)
+            .input("userId", sql.VarChar(20), userId)
+            .input("productId", sql.Int, productId)
             .query("DELETE FROM dbo.Carts WHERE user_id = @userId AND product_id = @productId");
     }
 }

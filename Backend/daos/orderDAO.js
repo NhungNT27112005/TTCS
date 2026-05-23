@@ -6,7 +6,7 @@ class OrderDAO {
     async getCartItemsWithStock(customerId) {
         const pool = await connectDB();
         const result = await pool.request()
-            .input("customerId", customerId)
+            .input("customerId", sql.VarChar(20), customerId)
             .query(`
                 SELECT c.product_id, c.quantity, p.unit_price, p.stock_quantity, p.warranty_period
                 FROM dbo.Carts c
@@ -19,13 +19,13 @@ class OrderDAO {
     // 2. Chèn thông tin tổng quan vào bảng Orders (Chạy bên trong Transaction)
     async insertOrder(transaction, orderData) {
         await transaction.request()
-            .input("orderId", orderData.newOrderId)
-            .input("customerId", orderData.customerId)
-            .input("address", orderData.delivery_address)
-            .input("total", orderData.totalCost)
-            .input("payMethod", orderData.payment_method)
-            .input("delivMethod", orderData.delivery_method)
-            .input("note", orderData.note || null)
+            .input("orderId", sql.VarChar(20), orderData.newOrderId)
+            .input("customerId", sql.VarChar(20), orderData.customerId)
+            .input("address", sql.NVarChar(255), orderData.delivery_address)
+            .input("total", sql.Decimal(18, 2), orderData.totalCost)
+            .input("payMethod", sql.VarChar(20), orderData.payment_method)
+            .input("delivMethod", sql.VarChar(100), orderData.delivery_method)
+            .input("note", sql.NVarChar(100), orderData.note || null)
             .query(`
                 INSERT INTO dbo.Orders (
                     order_id, customer_id, delivery_address, total_cost, 
@@ -41,11 +41,11 @@ class OrderDAO {
     // 3. Chèn chi tiết từng món hàng vào bảng Order_details (Chạy bên trong Transaction)
     async insertOrderDetail(transaction, orderId, item) {
         await transaction.request()
-            .input("orderId", orderId)
-            .input("productId", item.product_id)
-            .input("qty", item.quantity)
-            .input("price", item.unit_price)
-            .input("warranty", item.warranty_period || 12)
+            .input("orderId", sql.VarChar(20), orderId)
+            .input("productId", sql.Int, item.product_id)
+            .input("qty", sql.Int, item.quantity)
+            .input("price", sql.Decimal(15, 2), item.unit_price)
+            .input("warranty", sql.TinyInt, item.warranty_period || 12)
             .query(`
                 INSERT INTO dbo.Order_details (
                     order_id, product_id, quantity, unit_price_at_sale, warranty_period_applied
@@ -59,8 +59,8 @@ class OrderDAO {
     // 4. Khấu trừ số lượng tồn kho của sản phẩm (Chạy bên trong Transaction)
     async decreaseProductStock(transaction, productId, quantity) {
         await transaction.request()
-            .input("productId", productId)
-            .input("qty", quantity)
+            .input("productId", sql.Int, productId)
+            .input("qty", sql.Int, quantity)
             .query(`
                 UPDATE dbo.Products 
                 SET stock_quantity = stock_quantity - @qty
@@ -71,14 +71,14 @@ class OrderDAO {
     // 5. Xóa sạch giỏ hàng của khách sau khi lên đơn thành công (Chạy bên trong Transaction)
     async clearCart(transaction, customerId) {
         await transaction.request()
-            .input("customerId", customerId)
+            .input("customerId", sql.VarChar(20), customerId)
             .query("DELETE FROM dbo.Carts WHERE user_id = @customerId");
     }
     // Truy vấn lịch sử mua hàng từ bảng dbo.Orders
     async getOrderHistory(customerId) {
         const pool = await connectDB();
         const result = await pool.request()
-            .input("customerId", customerId)
+            .input("customerId", sql.VarChar(20), customerId)
             .query(`
                 SELECT order_id, delivery_address, total_cost, created_at, 
                        payment_method, order_status, note, delivery_method
@@ -105,7 +105,7 @@ class OrderDAO {
     async adminGetOrderDetailsById(id) {
         const pool = await connectDB();
         const result = await pool.request()
-            .input('id', id)
+            .input('id', sql.VarChar(20), id)
             .query(`
                 SELECT od.*, p.product_name, p.thumbnail_url, o.order_status, o.created_at, u.username, u.email
                 FROM Order_Details od
@@ -116,12 +116,26 @@ class OrderDAO {
             `);
         return result.recordset;
     }
+
+    // Lấy thông tin tóm tắt đơn hàng theo order_id
+    async getOrderById(id) {
+        const pool = await connectDB();
+        const result = await pool.request()
+            .input('id', sql.VarChar(20), id)
+            .query(`
+                SELECT order_id, customer_id, order_status, total_cost, delivery_address, payment_method, delivery_method, note, created_at
+                FROM Orders
+                WHERE order_id = @id
+            `);
+        return result.recordset[0];
+    }
+
 // Cập nhật trạng thái đơn hàng (đã viết hoa status)
     async updateOrderStatus(id, status) {
         const pool = await connectDB();
         await pool.request()
-            .input('id', id)
-            .input('status', status.toUpperCase()) // Đảm bảo đúng chuẩn DB
+            .input('id', sql.VarChar(20), id)
+            .input('status', sql.VarChar(20), status.toUpperCase()) // Đảm bảo đúng chuẩn DB
             .query("UPDATE Orders SET order_status = @status WHERE order_id = @id");
     }
 

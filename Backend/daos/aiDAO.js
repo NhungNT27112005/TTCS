@@ -1,12 +1,13 @@
 import { connectDB } from '../config/db.js';
+import sql from 'mssql';
 
 class AiDAO {
     // 1. Lấy sản phẩm tương tự dựa trên item_similarity
     async getSimilarProductsRaw(productId, limit) {
         const pool = await connectDB();
         const result = await pool.request()
-            .input("productId", productId)
-            .input("limit", limit)
+            .input("productId", sql.Int, productId)
+            .input("limit", sql.Int, limit)
             .query(`
                 SELECT 
                     a.suggested_product_id AS product_id,
@@ -28,8 +29,8 @@ class AiDAO {
     async getPersonalizedRecommendationsRaw(userId, limit) {
         const pool = await connectDB();
         const result = await pool.request()
-            .input("userId", userId)
-            .input("limit", limit)
+            .input("userId", sql.VarChar(20), userId)
+            .input("limit", sql.Int, limit)
             .query(`
                 SELECT TOP (@limit)
                     a.suggested_product_id AS product_id,
@@ -51,7 +52,7 @@ class AiDAO {
         const pool = await connectDB();
         const placeholders = productIds.map((_, i) => `@pid${i}`).join(',');
         const request = pool.request();
-        productIds.forEach((id, i) => request.input(`pid${i}`, id));
+        productIds.forEach((id, i) => request.input(`pid${i}`, sql.Int, id));
 
         const result = await request.query(`
             SELECT

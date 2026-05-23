@@ -7,6 +7,14 @@ const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const deliveryMethodLabels = {
+        'Fast Shipping': 'Giao hàng nhanh',
+        'Economy Shipping': 'Giao hàng tiết kiệm',
+        'Express Shipping': 'Hỏa tốc E-Tech (Trong ngày)'
+    };
+
+    const translateDeliveryMethod = (method) => deliveryMethodLabels[method] || method;
+
     useEffect(() => {
         const fetchOrderHistory = async () => {
             try {
@@ -51,7 +59,7 @@ const OrderHistory = () => {
                             <div className="card-body">
                                 <p><strong>Ngày đặt:</strong> {new Date(order.created_at).toLocaleString('vi-VN')}</p>
                                 <p><strong>Địa chỉ nhận:</strong> {order.delivery_address}</p>
-                                <p><strong>Vận chuyển:</strong> {order.delivery_method}</p>
+                                <p><strong>Vận chuyển:</strong> {translateDeliveryMethod(order.delivery_method)}</p>
                                 <p><strong>Thanh toán:</strong> {order.payment_method}</p>
                                 {order.note && <p className="order-note-text"><strong>Ghi chú:</strong> <em>"{order.note}"</em></p>}
                             </div>

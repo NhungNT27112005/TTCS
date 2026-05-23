@@ -10,10 +10,16 @@ const Cart = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+    const deliveryMethodLabels = {
+        'Fast Shipping': 'Giao hàng nhanh',
+        'Economy Shipping': 'Giao hàng tiết kiệm',
+        'Express Shipping': 'Hỏa tốc E-Tech (Trong ngày)'
+    };
+
     const [orderInfo, setOrderInfo] = useState({
         delivery_address: '',
         payment_method: 'COD',
-        delivery_method: 'Giao hàng nhanh',
+        delivery_method: 'Fast Shipping',
         note: ''
     });
     
@@ -158,9 +164,9 @@ const Cart = () => {
                         <div className="form-group">
                             <label>Phương thức vận chuyển</label>
                             <select name="delivery_method" value={orderInfo.delivery_method} onChange={handleInputChange}>
-                                <option value="Giao hàng nhanh">Giao hàng nhanh (Khuyên dùng)</option>
-                                <option value="Giao hàng tiết kiệm">Giao hàng tiết kiệm</option>
-                                <option value="Hỏa tốc">Hỏa tốc E-Tech (Trong ngày)</option>
+                                <option value="Fast Shipping">{deliveryMethodLabels['Fast Shipping']} (Khuyên dùng)</option>
+                                <option value="Economy Shipping">{deliveryMethodLabels['Economy Shipping']}</option>
+                                <option value="Express Shipping">{deliveryMethodLabels['Express Shipping']}</option>
                             </select>
                         </div>
 

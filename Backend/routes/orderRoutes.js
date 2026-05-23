@@ -10,6 +10,10 @@ router.post('/checkout', authenticateToken, orderModule.checkout);
 
 router.get('/history', authenticateToken, orderModule.getOrderHistory);
 
+// Khách hàng: cập nhật trạng thái đơn (ví dụ xác nhận đã chuyển khoản -> chuyển PENDING -> SHIPPING)
+router.put('/:id/status', authenticateToken, orderModule.customerUpdateOrderStatus);
+router.get('/:id/details', authenticateToken, orderModule.getOrderDetailsForCustomer);
+
 // --- ROUTE ADMIN THAO TÁC ĐƠN HÀNG & THỐNG KÊ ---
 // Lấy toàn bộ sản phẩm phía quản trị (Đường dẫn sau khi map: GET /admin/products/products)
 router.get("/admin/orders", verifyAdmin, orderModule.adminListOrders);

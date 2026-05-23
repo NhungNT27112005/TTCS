@@ -120,5 +120,50 @@ class OrderModule {
             res.status(500).json({ message: err.message });
         }
     }
+
+    // Khách hàng lấy chi tiết đơn hàng của chính mình
+    getOrderDetailsForCustomer = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const order = await orderDAO.getOrderById(id);
+            if (!order) return res.status(404).json({ message: 'Đơn hàng không tồn tại' });
+            if (order.customer_id !== req.user.user_id) return res.status(403).json({ message: 'Không có quyền truy cập' });
+
+            const details = await orderDAO.adminGetOrderDetailsById(id);
+            res.json({ orderSummary: order, items: details });
+        } catch (err) {
+            console.error('Lỗi getOrderDetailsForCustomer:', err.message);
+            res.status(500).json({ message: err.message });
+        }
+    }
+
+    // Khách hàng xác nhận đã chuyển khoản: cho phép chuyển trạng thái PENDING -> SHIPPING
+    customerUpdateOrderStatus = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { status } = req.body;
+
+            // Lấy đơn hàng để kiểm tra quyền sở hữu
+            const order = await orderDAO.getOrderById(id);
+            if (!order) return res.status(404).json({ message: "Đơn hàng không tồn tại" });
+
+            // Chỉ chủ sở hữu mới được xác nhận
+            if (order.customer_id !== req.user.user_id) {
+                return res.status(403).json({ message: "Bạn không có quyền cập nhật đơn hàng này" });
+            }
+
+            // Chỉ cho phép chuyển từ PENDING sang SHIPPING khi khách xác nhận chuyển khoản
+            if (order.order_status !== 'PENDING') {
+                return res.status(400).json({ message: 'Chỉ có đơn ở trạng thái PENDING mới được xác nhận' });
+            }
+
+            // Cập nhật trạng thái
+            await orderDAO.updateOrderStatus(id, status);
+            res.json({ message: 'Cập nhật trạng thái thành công' });
+        } catch (err) {
+            console.error('Lỗi customerUpdateOrderStatus:', err.message);
+            res.status(500).json({ message: err.message });
+        }
+    }
 }
 export default new OrderModule();

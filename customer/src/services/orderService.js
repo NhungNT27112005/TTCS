@@ -14,7 +14,16 @@ class OrderService {
     }
     //Hỗ trợ lấy thông tin Profile đổ vào Form của Payment.jsx
     async getUserProfileApi(userId) {
-        return await api.get(`${process.env.REACT_APP_API_BASE_URL}/api/user/profile/${userId}`);
+        return await api.get(`/api/user/profile/${userId}`);
+    }
+
+    // Khách hàng cập nhật trạng thái đơn (ví dụ: xác nhận đã chuyển khoản)
+    async updateOrderStatusApi(orderId, status) {
+        return await api.put(`${ORDER_BASE_URL}/${orderId}/status`, { status });
+    }
+
+    async getOrderDetailsApi(orderId) {
+        return await api.get(`${ORDER_BASE_URL}/${orderId}/details`);
     }
 }
 

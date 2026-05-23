@@ -25,7 +25,7 @@ class ProductDAO {
     async getProductById(id) {
         const pool = await connectDB();
         const result = await pool.request()
-            .input('id', id)
+            .input('id', sql.Int, id)
             .query("SELECT *, thumbnail_url as image_url FROM dbo.Products WHERE product_id = @id");
         return result.recordset;
     }
@@ -81,14 +81,14 @@ class ProductDAO {
     async insertProduct(p) {
         const pool = await connectDB();
         await pool.request()
-            .input('name', p.product_name)
-            .input('brand', p.brand)
-            .input('specs', p.specs_json)
-            .input('price', p.unit_price)
-            .input('stock', p.stock_quantity)
-            .input('warranty', p.warranty_period)
-            .input('img', p.thumbnail_url)
-            .input('cat', p.cat_id)
+            .input('name', sql.NVarChar(500), p.product_name)
+            .input('brand', sql.VarChar(30), p.brand)
+            .input('specs', sql.NVarChar(sql.MAX), p.specs_json)
+            .input('price', sql.Decimal(15, 2), p.unit_price)
+            .input('stock', sql.Int, p.stock_quantity)
+            .input('warranty', sql.TinyInt, p.warranty_period)
+            .input('img', sql.VarChar(500), p.thumbnail_url)
+            .input('cat', sql.Int, p.cat_id)
             .query(`
                 INSERT INTO dbo.Products (product_name, brand, specs_json, unit_price, stock_quantity, warranty_period, thumbnail_url, cat_id)
                 VALUES (@name, @brand, @specs, @price, @stock, @warranty, @img, @cat)
@@ -98,15 +98,15 @@ class ProductDAO {
     async updateProduct(id, p) {
         const pool = await connectDB();
         await pool.request()
-            .input('id', id)
-            .input('name', p.product_name)
-            .input('brand', p.brand)
-            .input('specs', p.specs_json)
-            .input('price', p.unit_price)
-            .input('stock', p.stock_quantity)
-            .input('warranty', p.warranty_period)
-            .input('img', p.thumbnail_url)
-            .input('cat', p.cat_id)
+            .input('id', sql.Int, id)
+            .input('name', sql.NVarChar(500), p.product_name)
+            .input('brand', sql.VarChar(30), p.brand)
+            .input('specs', sql.NVarChar(sql.MAX), p.specs_json)
+            .input('price', sql.Decimal(15, 2), p.unit_price)
+            .input('stock', sql.Int, p.stock_quantity)
+            .input('warranty', sql.TinyInt, p.warranty_period)
+            .input('img', sql.VarChar(500), p.thumbnail_url)
+            .input('cat', sql.Int, p.cat_id)
             .query(`
                 UPDATE dbo.Products SET 
                 product_name = @name, brand = @brand, specs_json = @specs, 
@@ -119,7 +119,7 @@ class ProductDAO {
     async deleteProduct(id) {
         const pool = await connectDB();
         await pool.request()
-            .input('id', id)
+            .input('id', sql.Int, id)
             .query("DELETE FROM dbo.Products WHERE product_id = @id");
     }
 

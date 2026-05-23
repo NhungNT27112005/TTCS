@@ -7,13 +7,21 @@ const Payment = () => {
     const location = useLocation();
     const navigate = useNavigate();
     
+    const deliveryMethodLabels = {
+        'Fast Shipping': 'Giao hàng nhanh',
+        'Economy Shipping': 'Giao hàng tiết kiệm',
+        'Express Shipping': 'Hỏa tốc E-Tech (Trong ngày)'
+    };
+
+    const translateDeliveryMethod = (method) => deliveryMethodLabels[method] || method;
+
     // Lấy dữ liệu từ Cart truyền sang
     const totalPrice = location.state?.total || 0;
     const selectedItems = location.state?.items || [];
     const orderInfo = location.state?.orderInfo || {
         delivery_address: '',
         payment_method: 'COD',
-        delivery_method: 'Giao hàng nhanh',
+        delivery_method: 'Fast Shipping',
         note: ''
     };
 
@@ -56,7 +64,6 @@ const Payment = () => {
         try {
             setLoading(true);
             
-            // 🎯 ỦY QUYỀN TẠO ĐƠN QUA SERVICE CŨ CÓ SẴN CỦA SẾP (/api/orders/checkout)
             const response = await orderService.checkoutApi(orderInfo);
 
             if (response.status === 201) {

@@ -1,4 +1,5 @@
 import { connectDB } from '../config/db.js';
+import sql from 'mssql';
 
 class UserDAO {
     // 1. Tìm kiếm tài khoản dựa trên Email và Mật khẩu đã băm (Đã làm ở câu trước)
@@ -6,8 +7,8 @@ class UserDAO {
         const pool = await connectDB();
         const result = await pool
             .request()
-            .input("email", email)
-            .input("password", hashedPassword)
+            .input("email", sql.VarChar(255), email)
+            .input("password", sql.VarChar(255), hashedPassword)
             .query(`
                 SELECT user_id, username, email, role_id
                 FROM dbo.Users
@@ -20,7 +21,7 @@ class UserDAO {
     async checkEmailExists(email) {
         const pool = await connectDB();
         const result = await pool.request()
-            .input('email', email)
+            .input('email', sql.VarChar(255), email)
             .query("SELECT email FROM dbo.Users WHERE email = @email");
         return result.recordset.length > 0;
     }
@@ -29,13 +30,13 @@ class UserDAO {
     async createUser(userData) {
         const pool = await connectDB();
         await pool.request()
-            .input('userId', userData.newUserId)
-            .input('username', userData.username)
-            .input('email', userData.email)
-            .input('passwordHash', userData.hashedPassword)
-            .input('roleId', userData.defaultRoleId)
-            .input('phone', '')    // Gửi chuỗi rỗng thay vì NULL theo đúng quy tắc DB
-            .input('address', '')  // Gửi chuỗi rỗng thay vì NULL theo đúng quy tắc DB
+            .input('userId', sql.VarChar(20), userData.newUserId)
+            .input('username', sql.NVarChar(255), userData.username)
+            .input('email', sql.VarChar(255), userData.email)
+            .input('passwordHash', sql.VarChar(255), userData.hashedPassword)
+            .input('roleId', sql.Int, userData.defaultRoleId)
+            .input('phone', sql.Char(10), '')    // Gửi chuỗi rỗng thay vì NULL theo đúng quy tắc DB
+            .input('address', sql.NVarChar(80), '')  // Gửi chuỗi rỗng thay vì NULL theo đúng quy tắc DB
             .query(`
                 INSERT INTO dbo.Users (
                     user_id,
@@ -64,7 +65,7 @@ class UserDAO {
         const pool = await connectDB();
         const result = await pool
             .request()
-            .input("userId", userId)
+            .input("userId", sql.VarChar(20), userId)
             .query(`
                 SELECT user_id, username, email, phone_number, default_address, role_id
                 FROM dbo.Users
@@ -78,9 +79,9 @@ class UserDAO {
         const pool = await connectDB();
         await pool
             .request()
-            .input("userId", userId)
-            .input("phone", phone)
-            .input("address", address)
+            .input("userId", sql.VarChar(20), userId)
+            .input("phone", sql.Char(10), phone)
+            .input("address", sql.NVarChar(80), address)
             .query(`
                 UPDATE dbo.Users
                 SET phone_number = @phone, default_address = @address
@@ -92,7 +93,7 @@ class UserDAO {
         const pool = await connectDB();
         const result = await pool
             .request()
-            .input("email", email)
+            .input("email", sql.VarChar(255), email)
             .query(`
                 SELECT user_id, username, email, password_hash, role_id 
                 FROM Users 
@@ -113,16 +114,16 @@ class UserDAO {
     async updateUserRole(id, roleId) {
         const pool = await connectDB();
         await pool.request()
-            .input('id', id)
-            .input('role', roleId)
+            .input('id', sql.VarChar(20), id)
+            .input('role', sql.Int, roleId)
             .query("UPDATE Users SET role_id = @role WHERE user_id = @id");
     }
 
     async updateUserStatus(id, isActive) {
         const pool = await connectDB();
         await pool.request()
-            .input('id', id)
-            .input('status', isActive ? 1 : 0) // Đồng bộ kiểu BIT/INT 1 hoặc 0
+            .input('id', sql.VarChar(20), id)
+            .input('status', sql.TinyInt, isActive ? 1 : 0) // Đồng bộ kiểu TINYINT 1 hoặc 0
             .query("UPDATE Users SET is_active = @status WHERE user_id = @id");
     }
 }
