@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
 import cartService from '../../services/cartService'; // 🎯 GỌI BƯU TÁ CART SERVICE
+import orderService from '../../services/orderService';
 import './Cart.css';
 
 const Cart = () => {
@@ -69,6 +70,16 @@ const Cart = () => {
         }
     };
 
+    const removeCartItem = async (id, productId) => {
+        try {
+            await cartService.removeFromCartApi(productId);
+            setCartItems(cartItems.filter(item => item.id !== id));
+        } catch (error) {
+            console.error('Lỗi xóa sản phẩm khỏi giỏ hàng:', error);
+            alert('Không thể xóa sản phẩm, thử lại sau!');
+        }
+    };
+
     const handleInputChange = (e) => {
         setOrderInfo({ ...orderInfo, [e.target.name]: e.target.value });
     };
@@ -82,7 +93,7 @@ const Cart = () => {
 
         try {
             // 🎯 THAY THẾ: Gọi qua hàm checkoutApi của service thay vì gọi api.post thô
-            const response = await cartService.checkoutApi(orderInfo);
+            const response = await orderService.checkoutApi(orderInfo);
             
             if (response.status === 201) {
                 alert("Đặt hàng thành công!");
@@ -111,10 +122,19 @@ const Cart = () => {
                                     <h3>{item.name}</h3>
                                     <p className="item-price">{item.price.toLocaleString()}đ</p>
                                 </div>
-                                <div className="item-quantity">
-                                    <button onClick={() => updateQuantity(item.id, item.productId, -1)}>-</button>
-                                    <span>{item.quantity}</span>
-                                    <button onClick={() => updateQuantity(item.id, item.productId, 1)}>+</button>
+                                <div className="item-actions">
+                                    <div className="item-quantity">
+                                        <button onClick={() => updateQuantity(item.id, item.productId, -1)}>-</button>
+                                        <span>{item.quantity}</span>
+                                        <button onClick={() => updateQuantity(item.id, item.productId, 1)}>+</button>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="btn-remove-item"
+                                        onClick={() => removeCartItem(item.id, item.productId)}
+                                    >
+                                        Xóa
+                                    </button>
                                 </div>
                             </div>
                         ))

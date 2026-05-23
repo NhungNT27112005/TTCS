@@ -10,6 +10,18 @@ const CategoryPage = () => {
     const [visibleCount, setVisibleCount] = useState(20); 
 
     const catMapping = { 'laptop': 1, 'dien-thoai': 2, 'tai-nghe': 3, 'the-nho': 4 };
+
+    const handleAddToCart = async (productId, event) => {
+        event?.preventDefault();
+        event?.stopPropagation();
+        try {
+            await productService.addToCartApi(productId, 1);
+            alert('Đã thêm vào giỏ hàng!');
+        } catch (error) {
+            console.error('Lỗi thêm vào giỏ hàng:', error);
+            alert('Vui lòng đăng nhập hoặc thử lại sau!');
+        }
+    };
     const categoryTitles = { 'dien-thoai': 'Điện thoại', 'laptop': 'Laptop', 'tai-nghe': 'Tai nghe', 'the-nho': 'Sạc' };
 
     useEffect(() => {
@@ -43,17 +55,24 @@ const CategoryPage = () => {
                             <div className="loading-box">Đang tải sản phẩm...</div>
                         ) : products.length > 0 ? (
                             products.slice(0, visibleCount).map((product) => (
-                                <Link to={`/products/${product.product_id}`} key={product.product_id} className="product-item-link">
-                                    <div className="product-card">
-                                        <div className="product-image">
-                                            <img src={product.image_url} alt={product.product_name} />
-                                        </div>
-                                        <div className="product-info">
-                                            <h3 className="product-name">{product.product_name}</h3>
-                                            <p className="product-price">{product.unit_price?.toLocaleString()}đ</p>
-                                        </div>
+                                <div key={product.product_id} className="product-card">
+                                <Link to={`/products/${product.product_id}`} className="product-item-link">
+                                    <div className="product-image">
+                                        <img src={product.image_url} alt={product.product_name} />
+                                    </div>
+                                    <div className="product-info">
+                                        <h3 className="product-name">{product.product_name}</h3>
+                                        <p className="product-price">{product.unit_price?.toLocaleString()}đ</p>
                                     </div>
                                 </Link>
+                                <button
+                                    type="button"
+                                    className="btn-add-to-cart"
+                                    onClick={(event) => handleAddToCart(product.product_id, event)}
+                                >
+                                    <i className="fa-solid fa-cart-shopping"></i> Thêm vào giỏ hàng
+                                </button>
+                            </div>
                             ))
                         ) : (
                             <div className="no-products">Không có sản phẩm nào trong danh mục này.</div>

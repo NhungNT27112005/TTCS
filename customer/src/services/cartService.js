@@ -19,6 +19,10 @@ class CartService {
         return await api.post(`${CART_BASE_URL}/add`, { productId, quantity });
     }
 
+    async removeFromCartApi(productId) {
+        return await api.delete(`${CART_BASE_URL}/remove/${productId}`);
+    }
+
     // ==========================================
     // ✨ CÁC API PHỤC VỤ GỢI Ý THÔNG MINH (AI)
     // ==========================================

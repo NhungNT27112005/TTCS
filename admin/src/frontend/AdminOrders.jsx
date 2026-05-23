@@ -11,7 +11,7 @@ const Orders = () => {
 
     const fetchOrders = async () => {
         try {
-            const data = await orderService.getAllOrders(); // 🌟 Gọi từ Service
+            const data = await orderService.getAllOrders(); 
             setOrders(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error("Lỗi fetch đơn hàng:", err);

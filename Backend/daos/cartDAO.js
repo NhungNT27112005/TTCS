@@ -48,6 +48,15 @@ class CartDAO {
             `);
         return result.recordset;
     }
+
+    // Xóa một sản phẩm khỏi giỏ hàng
+    async removeItemFromCart(userId, productId) {
+        const pool = await connectDB();
+        await pool.request()
+            .input("userId", userId)
+            .input("productId", productId)
+            .query("DELETE FROM dbo.Carts WHERE user_id = @userId AND product_id = @productId");
+    }
 }
 
 export default new CartDAO();

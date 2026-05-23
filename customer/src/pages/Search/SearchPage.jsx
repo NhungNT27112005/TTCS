@@ -9,6 +9,18 @@ const SearchPage = () => {
     const location = useLocation();
     const query = new URLSearchParams(location.search).get('q');
 
+    const handleAddToCart = async (productId, event) => {
+        event?.preventDefault();
+        event?.stopPropagation();
+        try {
+            await productService.addToCartApi(productId, 1);
+            alert('Đã thêm vào giỏ hàng!');
+        } catch (error) {
+            console.error('Lỗi thêm vào giỏ hàng:', error);
+            alert('Vui lòng đăng nhập hoặc thử lại sau!');
+        }
+    };
+
     useEffect(() => {
         const fetchSearchResults = async () => {
             if (!query) return;
@@ -40,13 +52,20 @@ const SearchPage = () => {
                 ) : results.length > 0 ? (
                     <div className="product-grid">
                         {results.map((product) => (
-                            <Link to={`/products/${product.product_id}`} key={product.product_id} className="product-card-link">
-                                <div className="product-card">
+                            <div key={product.product_id} className="product-card">
+                                <Link to={`/products/${product.product_id}`} className="product-card-link">
                                     <img src={product.image_url} alt={product.product_name} />
                                     <h3>{product.product_name}</h3>
-                                    <span>{product.unit_price?.toLocaleString()}đ</span>
-                                </div>
-                            </Link>
+                                    <span className="price">{product.unit_price?.toLocaleString()}đ</span>
+                                </Link>
+                                <button
+                                    type="button"
+                                    className="btn-add-to-cart"
+                                    onClick={(event) => handleAddToCart(product.product_id, event)}
+                                >
+                                    <i className="fa-solid fa-cart-shopping"></i> Thêm vào giỏ hàng
+                                </button>
+                            </div>
                         ))}
                     </div>
                 ) : (

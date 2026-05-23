@@ -73,12 +73,11 @@ table{
     border-collapse:collapse;
 }
 
-/* 🛠️ SỬA TẠI ĐÂY: Đổi sang màu tối (ví dụ xanh đen #1e293b) để chữ trắng nổi lên */
 table thead{
     background:#1e293b; 
 }
 
-/* 🛠️ SỬA TẠI ĐÂY: Đổi màu chữ tiêu đề (th) thành màu trắng tinh để không bị lẫn màu nền */
+
 table th{
     text-align:left;
     padding:15px;

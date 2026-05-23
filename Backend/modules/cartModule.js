@@ -41,6 +41,20 @@ class CartModule {
             res.status(500).send("Lỗi lấy giỏ hàng");
         }
     }
+
+    // [NGHIỆP VỤ 3]: Xóa sản phẩm khỏi giỏ hàng
+    removeFromCart = async (req, res) => {
+        try {
+            const userId = req.user.user_id;
+            const productId = req.params.productId;
+
+            await cartDAO.removeItemFromCart(userId, productId);
+            res.status(200).json({ message: "Xóa sản phẩm khỏi giỏ hàng thành công." });
+        } catch (err) {
+            console.error("❌ LỖI XÓA SẢN PHẨM GIỎ HÀNG:", err.message);
+            res.status(500).send("Lỗi khi xóa sản phẩm khỏi giỏ hàng");
+        }
+    }
 }
 
 export default new CartModule();

@@ -26,6 +26,18 @@ const Home = () => {
     setVisibleCount((prevCount) => prevCount + 10); 
   };
 
+  const handleAddToCart = async (productId, event) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+    try {
+      await productService.addToCartApi(productId, 1);
+      alert('Đã thêm vào giỏ hàng!');
+    } catch (error) {
+      console.error('Lỗi thêm vào giỏ hàng:', error);
+      alert('Vui lòng đăng nhập hoặc thử lại sau!');
+    }
+  };
+
   return (
     <main className="home-container">
       <section className="hero-section">
@@ -42,13 +54,20 @@ const Home = () => {
         <h2 className="section-title">Khám phá sản phẩm</h2>
         <div className="product-grid">
             {products.slice(0, visibleCount).map((product) => (
-                <Link to={`/products/${product.product_id}`} key={product.product_id} className="product-card-link">
-                <div className="product-card">
-                  <img src={product.image_url} alt={product.product_name} />
-                  <h3>{product.product_name}</h3>
-                  <span>{product.unit_price?.toLocaleString()}đ</span>
+                <div key={product.product_id} className="product-card">
+                  <Link to={`/products/${product.product_id}`} className="product-card-link">
+                    <img src={product.image_url} alt={product.product_name} />
+                    <h3>{product.product_name}</h3>
+                    <span className="price">{product.unit_price?.toLocaleString()}đ</span>
+                  </Link>
+                  <button
+                    type="button"
+                    className="btn-add-to-cart"
+                    onClick={(event) => handleAddToCart(product.product_id, event)}
+                  >
+                    <i className="fa-solid fa-cart-shopping"></i> Thêm vào giỏ hàng
+                  </button>
                 </div>
-              </Link>
             ))}
         </div>
 
