@@ -5,73 +5,29 @@ import sql from 'mssql';
 class OrderModule {
     // Xử lý nghiệp vụ Đặt hàng & Thanh toán đơn hàng
     checkout = async (req, res) => {
-        const customerId = req.user.user_id; // Lấy an toàn từ Token đã qua trạm gác Middleware
-        const { delivery_address, payment_method, delivery_method, note } = req.body;
+        const customerId = req.user.user_id;
+        const { delivery_address, payment_method, delivery_method } = req.body;
 
-        // Kiểm tra các tham số bắt buộc nhập từ phía giao diện Frontend
         if (!delivery_address || !payment_method || !delivery_method) {
-            return res.status(400).json({ message: "Vui lòng điền đầy đủ địa chỉ, phương thức thanh toán và vận chuyển!" });
+            return res.status(400).json({ message: "Vui lòng điền đầy đủ thông tin!" });
         }
 
-        const pool = await connectDB();
-        const transaction = new sql.Transaction(pool);
-
         try {
-            // 1. Gọi DAO lấy danh sách giỏ hàng kèm dữ liệu đối chiếu kho
-            const cartItems = await orderDAO.getCartItemsWithStock(customerId);
-            if (!cartItems || cartItems.length === 0) {
-                return res.status(400).json({ message: "Giỏ hàng trống rỗng, không thể đặt hàng!" });
-            }
-
-            // 2. Kiểm tra tồn kho thực tế của từng món hàng
-            for (const item of cartItems) {
-                if (item.quantity > item.stock_quantity) {
-                    return res.status(400).json({ 
-                        message: `Sản phẩm ID #${item.product_id} không đủ số lượng trong kho (Còn: ${item.stock_quantity})` 
-                    });
-                }
-            }
-
-            // 3. Tính toán tổng chi phí hóa đơn bằng hàm giảm mảng
-            const totalCost = cartItems.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
-
-            // KÍCH HOẠT VÒNG ĐỜI TRANSACTION
-            await transaction.begin();
-
-            // 4. Sinh mã đơn hàng công nghệ
             const newOrderId = 'OD' + Date.now().toString().slice(-10);
+            
+            // Gọi thẳng checkout, mặc định chỉ xử lý giỏ hàng
+            const result = await orderDAO.checkout(
+                { customerId }, 
+                { newOrderId, delivery_address, payment_method, delivery_method }
+            );
 
-            // 5. Chèn thông tin chung của hóa đơn xuống DB thông qua DAO
-            await orderDAO.insertOrder(transaction, {
-                newOrderId,
-                customerId,
-                delivery_address,
-                totalCost,
-                payment_method,
-                delivery_method,
-                note
-            });
-
-            // 6. Chèn chi tiết từng món hàng và khấu trừ tồn kho tương ứng
-            for (const item of cartItems) {
-                // Chèn chi tiết hóa đơn
-                await orderDAO.insertOrderDetail(transaction, newOrderId, item);
-                // Trừ kho hàng vật lý
-                await orderDAO.decreaseProductStock(transaction, item.product_id, item.quantity);
+            if (result.success) {
+                res.status(201).json({ message: result.message, order_id: newOrderId });
+            } else {
+                res.status(400).json({ message: result.message });
             }
-
-            // 7. Dọn sạch giỏ hàng vật lý sau khi đóng gói đơn hàng thành công
-            await orderDAO.clearCart(transaction, customerId);
-
-            // HOÀN TẤT GIAO DỊCH, GHI DỮ LIỆU ĐỒNG BỘ XUỐNG SQL SERVER
-            await transaction.commit();
-            res.status(201).json({ message: "Đặt hàng thành công!", order_id: newOrderId });
-
         } catch (err) {
-            // Cơ chế phòng vệ: Nếu bất kỳ bước nào trong Transaction bị sập, thực hiện hoàn nguyên (Rollback) dữ liệu sạch
-            if (transaction._begun) await transaction.rollback();
-            console.error("❌ LỖI TẠO ĐƠN HÀNG TẠI OrderModule:", err.message);
-            res.status(500).json({ message: "Lỗi tạo đơn hàng: " + err.message });
+            res.status(500).json({ message: "Lỗi hệ thống: " + err.message });
         }
     }
     // [NGHIỆP VỤ MỚI]: 🌟 Lấy lịch sử đơn hàng của người dùng
@@ -102,7 +58,7 @@ class OrderModule {
     adminGetOrderDetail = async (req, res) => {
         try {
             const { id } = req.params;
-            const details = await orderDAO.adminGetOrderDetailsById(id);
+            const details = await orderDAO.getOrderDetailsById(id);
             res.json(details);
         } catch (err) {
             console.error("❌ LỖI TRONG MODULE:", err.message); 
@@ -129,7 +85,7 @@ class OrderModule {
             if (!order) return res.status(404).json({ message: 'Đơn hàng không tồn tại' });
             if (order.customer_id !== req.user.user_id) return res.status(403).json({ message: 'Không có quyền truy cập' });
 
-            const details = await orderDAO.adminGetOrderDetailsById(id);
+            const details = await orderDAO.getOrderDetailsById(id);
             res.json({ orderSummary: order, items: details });
         } catch (err) {
             console.error('Lỗi getOrderDetailsForCustomer:', err.message);
@@ -152,14 +108,30 @@ class OrderModule {
                 return res.status(403).json({ message: "Bạn không có quyền cập nhật đơn hàng này" });
             }
 
-            // Chỉ cho phép chuyển từ PENDING sang SHIPPING khi khách xác nhận chuyển khoản
-            if (order.order_status !== 'PENDING') {
-                return res.status(400).json({ message: 'Chỉ có đơn ở trạng thái PENDING mới được xác nhận' });
+            // Hỗ trợ các luồng hợp lệ từ phía khách hàng:
+            // 1) Khách xác nhận chuyển khoản cho đơn BANK_TRANSFER: từ PENDING -> SHIPPING
+            // 2) Khách xác nhận đã nhận hàng (cho COD hoặc sau thanh toán): từ SHIPPING -> DELIVERED
+
+            if (status === 'SHIPPING') {
+                if (order.order_status !== 'PENDING') {
+                    return res.status(400).json({ message: 'Chỉ có đơn PENDING mới có thể chuyển sang SHIPPING bởi khách hàng' });
+                }
+                if (order.payment_method !== 'BANK_TRANSFER') {
+                    return res.status(400).json({ message: 'Chỉ đơn chuyển khoản mới yêu cầu khách hàng xác nhận thanh toán.' });
+                }
+                await orderDAO.updateOrderStatus(id, 'SHIPPING');
+                return res.json({ message: 'Xác nhận thanh toán đã được ghi nhận, đơn chuyển sang SHIPPING' });
             }
 
-            // Cập nhật trạng thái
-            await orderDAO.updateOrderStatus(id, status);
-            res.json({ message: 'Cập nhật trạng thái thành công' });
+            if (status === 'DELIVERED') {
+                if (order.order_status !== 'SHIPPING') {
+                    return res.status(400).json({ message: 'Chỉ có đơn SHIPPING mới có thể xác nhận đã nhận hàng.' });
+                }
+                await orderDAO.updateOrderStatus(id, 'DELIVERED');
+                return res.json({ message: 'Cảm ơn! Đơn hàng đã đánh dấu là DELIVERED.' });
+            }
+
+            return res.status(400).json({ message: 'Hành động không hợp lệ từ phía khách hàng.' });
         } catch (err) {
             console.error('Lỗi customerUpdateOrderStatus:', err.message);
             res.status(500).json({ message: err.message });

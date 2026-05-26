@@ -128,7 +128,7 @@ const AdminProducts = () => {
                     value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
 
-            <table className="admin-table">
+            <table className="admin-table product-table">
                 <thead>
                     <tr>
                         <th>ID</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Danh mục</th>
@@ -146,11 +146,11 @@ const AdminProducts = () => {
                                 <td>{p.cat_name}</td>
                                 <td>{p.brand}</td>
                                 <td>{Number(p.unit_price).toLocaleString()}đ</td>
-                                <td>{p.stock_quantity}</td>
+                                <td style={{ paddingLeft: "15px" }}>{p.stock_quantity}</td>
                                 <td>
                                     <div className="admin-actions-cell">
-                                        <button className="btn-action btn-edit" onClick={() => handleEditClick(p)}>Sửa</button>
-                                        <button className="btn-action btn-delete" onClick={() => handleDelete(p.product_id)}>Xóa</button>
+                                        <button className="product-btn btn-edit" onClick={() => handleEditClick(p)}>Sửa</button>
+                                        <button className="product-btn btn-delete" onClick={() => handleDelete(p.product_id)}>Xóa</button>
                                     </div>
                                 </td>
                             </tr>

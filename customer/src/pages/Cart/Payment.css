@@ -120,6 +120,15 @@
 
 .btn-submit-payment:hover { background: #b71c1c; }
 
+.empty-cart-note {
+    margin-top: 20px;
+    padding: 14px;
+    border: 1px dashed #aaa;
+    border-radius: 8px;
+    color: #555;
+    background: #f7f7f7;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
     .payment-content { flex-direction: column; }

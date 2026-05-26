@@ -92,13 +92,10 @@
 
 /* ================= FORM ================= */
 
-.admin-form{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:24px;
+.admin-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px; 
 }
 
 /* full width */
@@ -109,11 +106,11 @@
 
 /* ================= FORM GROUP ================= */
 
-.form-group{
-
-    display:flex;
-    flex-direction:column;
-    gap:10px;
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; 
+    margin-bottom: 5px; 
 }
 
 .form-group label{
@@ -180,7 +177,33 @@
     margin-top:20px;
 }
 /* cancel */
+/* Style riêng cho nút bảng sản phẩm, không dùng class .btn-action của bảng đơn hàng */
+.product-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    margin: 0 4px;
+    transition: 0.2s;
+}
 
+.product-btn.btn-edit {
+    background-color: #f1c40f !important; /* Màu vàng */
+    color: #000;
+}
+
+.product-btn.btn-delete {
+    background-color: #e74c3c !important; /* Màu đỏ */
+    color: #fff;
+}
+
+/* Đảm bảo bảng không bị dồn */
+.admin-actions-cell {
+    display: flex;
+    justify-content: flex-end;
+    white-space: nowrap;
+}
 .btn-cancel{
 
     padding:14px 34px;
@@ -356,4 +379,45 @@
 
 .spec-add-btn:hover {
     background: #2a44b0;
+}
+
+/* ================= PRODUCT TABLE LAYOUT ================= */
+.product-table {
+    table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.product-table th, 
+.product-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: center; 
+}
+
+/* Cho phép tên sản phẩm xuống dòng */
+.product-table td:nth-child(3) {
+    white-space: normal;
+    word-wrap: break-word; 
+}
+
+/* Các cột khác vẫn giữ không xuống dòng để tránh vỡ bảng */
+.product-table th:not(:nth-child(3)), 
+.product-table td:not(:nth-child(3)) {
+    white-space: nowrap; 
+}
+/* Định nghĩa độ rộng cụ thể cho từng cột */
+.product-table th:nth-child(1), .product-table td:nth-child(1) { width: 50px; }  /* ID */
+.product-table th:nth-child(2), .product-table td:nth-child(2) { width: 70px; }  /* Ảnh */
+.product-table th:nth-child(3), .product-table td:nth-child(3) { width: 25%; }  /* Tên SP */
+.product-table th:nth-child(4), .product-table td:nth-child(4) { width: 10%; }  /* Danh mục */
+.product-table th:nth-child(5), .product-table td:nth-child(5) { width: 10%; }  /* Thương hiệu */
+.product-table th:nth-child(6), .product-table td:nth-child(6) { width: 15%; }  /* Giá (Cấp nhiều không gian hơn) */
+.product-table th:nth-child(7), .product-table td:nth-child(7) { width: 10%; }  /* Tồn kho */
+.product-table th:last-child, .product-table td:last-child { width: 120px; }     /* Thao tác */
+/* Kích thước ảnh thô */
+.product-table .admin-product-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
 }

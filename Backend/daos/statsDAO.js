@@ -7,14 +7,7 @@ class StatsDAO {
      */
     async getGeneralStats() {
         const pool = await connectDB();
-        const result = await pool.request().query(`
-            SELECT 
-                (SELECT COUNT(*) FROM Users) as totalUsers,
-                (SELECT COUNT(*) FROM Products) as totalProducts,
-                (SELECT COUNT(*) FROM Orders) as totalOrders,
-                (SELECT SUM(total_cost) FROM Orders WHERE order_status != 'CANCELLED') as totalRevenue,
-                (SELECT COUNT(*) FROM Orders WHERE order_status = 'PENDING') as pendingOrders
-        `);
+        const result = await pool.request().execute('sp_GetGeneralStats');
         return result.recordset[0];
     }
 
@@ -23,10 +16,7 @@ class StatsDAO {
      */
     async getLowStockProducts() {
         const pool = await connectDB();
-        const result = await pool.request().query(`
-            SELECT TOP 5 product_id, product_name, stock_quantity 
-            FROM Products WHERE stock_quantity < 10 ORDER BY stock_quantity ASC
-        `);
+        const result = await pool.request().execute('sp_GetLowStockProducts');
         return result.recordset;
     }
 
@@ -35,11 +25,7 @@ class StatsDAO {
      */
     async getRecentOrders() {
         const pool = await connectDB();
-        const result = await pool.request().query(`
-            SELECT TOP 5 o.order_id, u.username, o.total_cost, o.order_status
-            FROM Orders o JOIN Users u ON o.customer_id = u.user_id
-            ORDER BY o.created_at DESC
-        `);
+        const result = await pool.request().execute('sp_GetRecentOrders');
         return result.recordset;
     }
 }

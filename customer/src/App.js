@@ -18,6 +18,7 @@ import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import OrderHistory from './pages/OrderHistory/OrderHistory';
+import OrderDetail from './pages/OrderHistory/OrderDetail';
 
 
 const AppContent = () => {
@@ -39,7 +40,8 @@ const AppContent = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/payment" element={<Payment />} />
-        <Route path="/Profile/orders" element={<OrderHistory />} />
+        <Route path="/profile/orders" element={<OrderHistory />} />
+        <Route path="/profile/orders/:orderId" element={<OrderDetail />} />
       </Routes>
       {<Footer />}
     </>

@@ -6,7 +6,8 @@ import './Payment.css';
 const Payment = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    
+    const existingOrderId = location.state?.orderId;
+
     const deliveryMethodLabels = {
         'Fast Shipping': 'Giao hàng nhanh',
         'Economy Shipping': 'Giao hàng tiết kiệm',
@@ -15,19 +16,25 @@ const Payment = () => {
 
     const translateDeliveryMethod = (method) => deliveryMethodLabels[method] || method;
 
-    // Lấy dữ liệu từ Cart truyền sang
-    const totalPrice = location.state?.total || 0;
-    const selectedItems = location.state?.items || [];
-    const orderInfo = location.state?.orderInfo || {
+    // Lấy dữ liệu từ Cart truyền sang hoặc từ đơn hàng đã tồn tại
+    const totalFromLocation = location.state?.total || 0;
+    const itemsFromLocation = location.state?.items || [];
+    const infoFromLocation = location.state?.orderInfo;
+
+    const [loading, setLoading] = useState(false);
+    const [loadingOrder, setLoadingOrder] = useState(Boolean(existingOrderId));
+    const [orderStep, setOrderStep] = useState(1); // 1: Xem thông tin, 2: Hoàn tất đơn hàng
+    const [createdOrderId, setCreatedOrderId] = useState('');
+    const [orderStatus, setOrderStatus] = useState(location.state?.orderStatus || '');
+    const [selectedItems, setSelectedItems] = useState(itemsFromLocation);
+    const [totalPrice, setTotalPrice] = useState(totalFromLocation);
+    const [orderInfo, setOrderInfo] = useState(infoFromLocation || {
         delivery_address: '',
         payment_method: 'COD',
         delivery_method: 'Fast Shipping',
         note: ''
-    };
-
-    const [loading, setLoading] = useState(false);
-    const [orderStep, setOrderStep] = useState(1); // 1: Xem thông tin, 2: Hoàn tất đơn hàng
-    const [createdOrderId, setCreatedOrderId] = useState('');
+    });
+    const [existingOrder, setExistingOrder] = useState(Boolean(existingOrderId));
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -59,24 +66,75 @@ const Payment = () => {
         fetchUserProfile();
     }, []);
 
+    useEffect(() => {
+        if (!existingOrderId) return;
+
+        const fetchExistingOrder = async () => {
+            try {
+                setLoadingOrder(true);
+                const response = await orderService.getOrderDetailApi(existingOrderId);
+                const summary = response.data.orderSummary;
+                const items = response.data.items || [];
+
+                const mappedItems = items.map(item => ({
+                    name: item.product_name || item.product_id || 'Sản phẩm',
+                    quantity: item.quantity || 0,
+                    price: item.unit_price_at_sale || item.price || 0
+                }));
+
+                const total = mappedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+                setOrderInfo({
+                    delivery_address: summary.delivery_address || '',
+                    payment_method: summary.payment_method || 'COD',
+                    delivery_method: summary.delivery_method || 'Fast Shipping',
+                    note: summary.note || ''
+                });
+                setSelectedItems(mappedItems);
+                setTotalPrice(total || summary.total_cost || 0);
+                setOrderStatus(summary.order_status || '');
+            } catch (error) {
+                console.error('Lỗi khi lấy thông tin đơn hàng:', error);
+                alert('Không thể tải thông tin thanh toán cho đơn hàng này.');
+            } finally {
+                setLoadingOrder(false);
+            }
+        };
+
+        fetchExistingOrder();
+    }, [existingOrderId]);
+
     // HÀM GỌI API ĐẨY ĐƠN HÀNG XUỐNG DATABASE SQL SERVER
     const handleConfirmOrder = async () => {
         try {
             setLoading(true);
-            
-            const response = await orderService.checkoutApi(orderInfo);
 
-            if (response.status === 201) {
-                setCreatedOrderId(response.data.order_id);
-                setOrderStep(2); // Chuyển sang bước Hoàn tất hiển thị giao diện thành công
+            if (existingOrder && existingOrderId) {
+                const response = await orderService.updateOrderStatusApi(existingOrderId, 'DELIVERED');
+                if (response.status === 200) {
+                    setCreatedOrderId(existingOrderId);
+                    setOrderStep(2);
+                }
+            } else {
+                const response = await orderService.checkoutApi(orderInfo);
+                if (response.status === 201) {
+                    setCreatedOrderId(response.data.order_id);
+                    setOrderStep(2); // Chuyển sang bước Hoàn tất hiển thị giao diện thành công
+                }
             }
         } catch (error) {
-            console.error("Lỗi tạo đơn hàng:", error);
-            alert("Xử lý đơn hàng thất bại: " + (error.response?.data?.message || "Vui lòng thử lại!"));
+            console.error(existingOrder ? "Lỗi cập nhật trạng thái đơn hàng:" : "Lỗi tạo đơn hàng:", error);
+            alert(existingOrder
+                ? "Xác nhận thanh toán thất bại. Vui lòng thử lại!"
+                : "Xử lý đơn hàng thất bại: " + (error.response?.data?.message || "Vui lòng thử lại!"));
         } finally {
             setLoading(false);
         }
     };
+
+    if (loadingOrder) {
+        return <div className="payment-loading">Đang tải thông tin đơn hàng...</div>;
+    }
 
     return (
         <div className="payment-container">
@@ -118,9 +176,13 @@ const Payment = () => {
                                             <p><strong>Nội dung CK:</strong> <span className="highlight">ETECH {formData.phone || 'PAY'}</span></p>
                                         </div>
                                     </div>
-                                    <button className="btn-confirm-payment" onClick={handleConfirmOrder} disabled={loading}>
-                                        {loading ? "Đang xử lý hệ thống..." : "Tôi đã chuyển khoản thành công"}
-                                    </button>
+                                    {selectedItems.length > 0 && totalPrice > 0 ? (
+                                        <button className="btn-confirm-payment" onClick={handleConfirmOrder} disabled={loading}>
+                                            {loading ? "Đang xử lý hệ thống..." : "Tôi đã chuyển khoản thành công"}
+                                        </button>
+                                    ) : (
+                                        <p className="empty-cart-note">Giỏ hàng trống, không có đơn hàng để xác nhận.</p>
+                                    )}
                                 </div>
                             ) : (
                                 /* TRƯỜNG HỢP 2: KHÁCH CHỌN PHƯƠNG THỨC THANH TOÁN COD */
@@ -130,12 +192,16 @@ const Payment = () => {
                                         <p>Sếp đã lựa chọn hình thức thanh toán khi nhận hàng.</p>
                                         <div className="cod-alert-box">
                                             <i className="fa-solid fa-circle-info"></i>
-                                            <span><strong>Thông báo nghiệp vụ hệ thống:</strong> Đơn hàng sau khi khởi tạo sẽ nằm ở trạng thái <mark className="badge-pending">PENDING</mark> (Chờ duyệt) và <mark className="badge-shipping">SHIPPING</mark> (Đang giao). Khi đối tác vận chuyển giao hàng thành công và Admin chuyển trạng thái sang <mark className="badge-completed">DELIVERED / COMPLETED</mark>, đơn hàng sẽ chính thức được hệ thống ghi nhận là Đã trả tiền vĩnh viễn!</span>
+                                            <span><strong>Thông báo nghiệp vụ hệ thống:</strong> Đơn hàng sẽ luôn ở trạng thái <mark className="badge-pending">PENDING</mark> cho đến khi đối tác vận chuyển giao hàng thành công và Admin chuyển trạng thái sang <mark className="badge-completed">DELIVERED / COMPLETED</mark>. Khi đó đơn hàng mới chính thức được hệ thống ghi nhận là Đã trả tiền.</span>
                                         </div>
                                     </div>
-                                    <button className="btn-confirm-payment" onClick={handleConfirmOrder} disabled={loading}>
-                                        {loading ? "Đang tạo đơn..." : "Xác nhận tạo đơn hàng COD"}
-                                    </button>
+                                    {selectedItems.length > 0 && totalPrice > 0 ? (
+                                        <button className="btn-confirm-payment" onClick={handleConfirmOrder} disabled={loading}>
+                                            {loading ? "Đang tạo đơn..." : "Xác nhận tạo đơn hàng COD"}
+                                        </button>
+                                    ) : (
+                                        <p className="empty-cart-note">Giỏ hàng trống, không có đơn hàng để xác nhận.</p>
+                                    )}
                                 </div>
                             )}
                         </>

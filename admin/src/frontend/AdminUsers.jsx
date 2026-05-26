@@ -53,12 +53,11 @@ const AdminUsers = () => {
                 <input type="text" placeholder="Tìm kiếm user..." className="admin-search"
                     value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
-
             <table className="admin-table">
                 <thead>
                     <tr>
                         <th>ID</th><th>Tên</th><th>Email</th><th>SĐT</th>
-                        <th>Role</th><th>Trạng thái</th><th>Thao tác</th>
+                        <th>Role</th><th>Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,9 +81,6 @@ const AdminUsers = () => {
                                     onClick={() => updateStatus(user.user_id, !user.is_active)}>
                                     {user.is_active ? 'Hoạt động' : 'Đã khóa'}
                                 </button>
-                            </td>
-                            <td>
-                                <button className="btn-delete" onClick={() => deleteUser(user.user_id)}>Xóa</button>
                             </td>
                         </tr>
                     ))}

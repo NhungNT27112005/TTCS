@@ -32,42 +32,38 @@ class UserModule {
     }
 
     // [NGHIỆP VỤ 2]: Đăng ký 
-    register = async (req, res) => {
-        try {
-            const { username, email, password } = req.body;
+    // [userModule.js]
+register = async (req, res) => {
+    try {
+        // Lấy đủ 5 tham số từ body
+        const { username, email, password, phone_number, default_address } = req.body;
 
-            if (!username || !email || !password) {
-                return res.status(400).json({ message: "Vui lòng điền đầy đủ tên, email và mật khẩu." });
-            }
+        // Kiểm tra đầu vào
+        if (!username || !email || !password || !phone_number || !default_address) {
+            return res.status(400).json({ message: "Vui lòng điền đủ thông tin!" });
+        }
 
-            if (password.length < 6) {
-                return res.status(400).json({ message: "Mật khẩu phải có ít nhất 6 ký tự." });
-            }
+        // Gọi DAO (đã gộp kiểm tra trùng vào SP)
+        const result = await userDAO.createUser({
+            newUserId: 'U' + Date.now().toString().slice(-10),
+            username,
+            email,
+            hashedPassword: this.#hashPassword(password),
+            defaultRoleId: 1,
+            phone: phone_number,
+            address: default_address
+        });
 
-            const isEmailTaken = await userDAO.checkEmailExists(email);
-            if (isEmailTaken) {
-                return res.status(400).json({ message: "Email này đã được sử dụng!" });
-            }
+        // Xử lý phản hồi từ SP
+        if (result === 'EXIST_EMAIL') return res.status(400).json({ message: "Email đã tồn tại!" });
+        if (result === 'EXIST_PHONE') return res.status(400).json({ message: "Số điện thoại đã tồn tại!" });
 
-            const newUserId = 'U' + Date.now().toString().slice(-10);
-            const defaultRoleId = 1;
-            const hashedPassword = this.#hashPassword(password); // 🎉 'this' an toàn tuyệt đối
-
-            await userDAO.createUser({
-                newUserId,
-                username,
-                email,
-                hashedPassword,
-                defaultRoleId
-            });
-
-            res.status(201).json({ message: "Tạo tài khoản E-Tech thành công!" });
+        res.status(201).json({ message: "Đăng ký thành công!" });
         } catch (err) {
-            console.error("❌ LỖI CHI TIẾT TẠI UserModule - register:", err);
             res.status(500).json({ message: "Lỗi hệ thống: " + err.message });
         }
     }
-    // [NGHIỆP VỤ 3]: 🌟 THÊM MỚI - Lấy thông tin cá nhân
+    // THÊM MỚI - Lấy thông tin cá nhân
     getProfile = async (req, res) => {
         try {
             // Đồng bộ chuẩn chữ .id
@@ -87,7 +83,7 @@ class UserModule {
             res.status(500).send("Lỗi lấy thông tin cá nhân");
         }
     }
-    // [NGHIỆP VỤ 4]: 🌟 THÊM MỚI - Cập nhật thông tin cá nhân
+    // [NGHIỆP VỤ 4]: Cập nhật thông tin cá nhân
     updateProfile = async (req, res) => {
         try {
             // Kiểm tra quyền: Chỉ chính chủ hoặc Admin mới được sửa
@@ -96,11 +92,19 @@ class UserModule {
             }
 
             const { phone_number, default_address } = req.body;
+            if (!phone_number || !default_address) {
+                return res.status(400).json({ message: "Số điện thoại và địa chỉ không được để trống!" });
+            }
 
             // Ra lệnh cho DAO thực thi câu lệnh UPDATE dưới DB
-            await userDAO.updateUserProfile(req.params.id, phone_number, default_address);
+            const result = await userDAO.updateUserProfile(req.params.id, phone_number, default_address);
 
-            res.json({ message: "Cập nhật thành công!" });
+            // 5. Xử lý kết quả trả về từ Stored Procedure
+            if (result === 'EXIST_PHONE') {
+                return res.status(400).json({ message: "Số điện thoại này đã được tài khoản khác sử dụng!" });
+            }
+
+            return res.status(200).json({ message: "Cập nhật hồ sơ thành công!" });
         } catch (err) {
             console.error("❌ LỖI TẠI UserModule - updateProfile:", err.message);
             res.status(500).send("Lỗi khi cập nhật thông tin");

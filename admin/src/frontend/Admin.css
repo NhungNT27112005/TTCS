@@ -23,7 +23,7 @@
 .admin-sidebar {
     position: sticky;
     top: 0;
-    width: 260px;
+    width: 200px;
     background-color: #2c3e50;
     color: white;
     padding: 20px;
@@ -93,8 +93,24 @@
 }
 
 .admin-table td {
-    padding: 15px;
+    padding: 12px 15px; /* Tăng padding để các cột cách xa nhau hơn */
+    vertical-align: middle;
     border-bottom: 1px solid #eee;
+}
+/* Ép cột Khách hàng rộng hơn */
+.admin-table th:nth-child(2), 
+.admin-table td:nth-child(2) {
+    width: 20%; /* Tăng độ rộng cột khách hàng lên 30% */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Ép cột chứa nút (Cột cuối) hẹp lại */
+.admin-table th:last-child, 
+.admin-table td:last-child {
+    width: 15%; /* Giảm cột nút xuống còn 15% */
+    text-align: left;
 }
 
 /* ⭐ FIX: Chỉ hover tbody tr, KHÔNG chạm vào thead */
@@ -215,6 +231,51 @@
 }
 .btn-detail:hover { background: #2563eb; }
 
+/* Unified action button style for admin tables */
+.admin-actions {
+    display: flex;
+    gap: 4px; /* Thu hẹp khoảng cách giữa các nút */
+    justify-content: flex-end; /* Căn phải để nhìn chuyên nghiệp */
+}
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px; /* Giảm padding để nút bé hơn */
+    font-size: 12px;   /* Giảm size chữ nút */
+    border: none;
+    background: transparent !important;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #475569;
+    transition: 0.2s;
+}
+.btn-action i {
+    font-size: 16px; /* Chỉnh kích thước icon cho đồng đều */
+}
+.btn-action:active { transform: translateY(1px); }
+
+/* Modifiers set only icon color (no background) */
+/* Định nghĩa màu riêng cho từng loại nút (vẫn giữ nét) */
+.btn-detail { color: #3b82f6 !important; } /* Xanh dương */
+.btn-approve { color: #10b981 !important; } /* Xanh lá */
+.btn-cancel { color: #ef4444 !important; }  /* Đỏ */
+
+/* subtle hover that keeps icon visible but no solid fill */
+/* Hiệu ứng khi di chuột vào (đổi màu nhẹ và phóng to 1 chút cho chuyên nghiệp) */
+.btn-action:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+/* Disabled/locked appearance for cancelled orders */
+.btn-action[disabled], .btn-action.disabled {
+    opacity: 0.5; cursor: not-allowed; box-shadow: none; color: #9ca3af;
+}
+.btn-hidden {
+    visibility: hidden;
+    pointer-events: none;
+}
 .btn-logout {
     background: #ef4444;
     color: white;

@@ -5,7 +5,7 @@ class StatsModule {
     
     getDashboardStats = async (req, res) => {
         try {
-            // 1. Module gọi xuống DAO để lấy dữ liệu (Không chứa một dòng SQL nào ở đây)
+            // 1. Module gọi xuống DAO để lấy dữ liệu 
             const generalStats = await statsDAO.getGeneralStats();
             const lowStockProducts = await statsDAO.getLowStockProducts();
             const recentOrders = await statsDAO.getRecentOrders();

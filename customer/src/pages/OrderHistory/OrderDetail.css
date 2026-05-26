@@ -1,0 +1,24 @@
+.order-detail-page { padding: 24px; background: #f8fafc; min-height: 100vh; }
+.order-detail-loading,
+.order-detail-error { max-width: 900px; margin: 32px auto; padding: 24px; background: #ffffff; border-radius: 16px; box-shadow: 0 10px 20px rgba(15,23,42,0.08); text-align: center; }
+.order-detail-error p { margin-bottom: 20px; color: #374151; }
+.btn-back-to-history { background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 10px 16px; cursor: pointer; font-weight: 700; }
+.order-detail-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; max-width: 900px; margin: 0 auto 24px; }
+.order-detail-header h2 { margin: 0; font-size: 28px; color: #0f172a; }
+.order-detail-id { margin: 8px 0 0; color: #475569; }
+.order-detail-summary { max-width: 900px; margin: 0 auto 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.order-detail-summary h3 { margin-bottom: 12px; color: #1e293b; }
+.order-detail-summary p { margin: 8px 0; color: #334155; }
+.order-detail-items { max-width: 900px; margin: 0 auto; background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 10px 20px rgba(15,23,42,0.06); }
+.order-detail-items h3 { margin-top: 0; color: #0f172a; }
+.order-detail-items table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.order-detail-items th,
+.order-detail-items td { padding: 12px 14px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+.order-detail-items th { color: #334155; font-weight: 700; background: #f8fafc; }
+.order-detail-items tbody tr:last-child td { border-bottom: none; }
+.order-detail-total { margin-top: 20px; display: flex; justify-content: flex-end; align-items: center; gap: 12px; font-size: 18px; color: #111827; font-weight: 700; }
+.order-detail-total strong { color: #0f172a; }
+@media (max-width: 720px) {
+  .order-detail-summary { grid-template-columns: 1fr; }
+  .order-detail-header { flex-direction: column; align-items: stretch; }
+}

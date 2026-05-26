@@ -9,7 +9,9 @@ const Register = () => {
         username: '', 
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        phone: '',      // Thêm trường này
+        address: ''     // Thêm trường này
     });
 
     const handleChange = (e) => {
@@ -32,7 +34,9 @@ const Register = () => {
             const response = await userService.registerApi(
                 formData.username,
                 formData.email,
-                formData.password
+                formData.password,
+                formData.phone,   // Truyền thêm phone
+                formData.address
             );
 
             if (response.status === 201) {
@@ -78,6 +82,29 @@ const Register = () => {
                         placeholder="Ví dụ: customer@gmail.com" 
                         required 
                         value={formData.email}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="input-group">
+                    <label>Số điện thoại</label>
+                    <input 
+                        type="text" 
+                        name="phone" 
+                        placeholder="Nhập 10 số điện thoại..." 
+                        required 
+                        value={formData.phone}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="input-group">
+                    <label>Địa chỉ mặc định</label>
+                    <input 
+                        type="text" 
+                        name="address" 
+                        placeholder="Nhập địa chỉ nhận hàng..." 
+                        required 
+                        value={formData.address}
                         onChange={handleChange}
                     />
                 </div>

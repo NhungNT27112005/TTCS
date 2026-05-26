@@ -82,6 +82,7 @@ def generate_cart_recommendations(engine, all_recs_df):
     cart_recs = []
     for user_id, user_cart in carts.groupby('user_id'):
         cart_product_ids = user_cart['product_id'].tolist()
+        representative_product_id = cart_product_ids[0]
 
         similar = all_recs_df[
             all_recs_df['product_id'].isin(cart_product_ids)
@@ -101,7 +102,7 @@ def generate_cart_recommendations(engine, all_recs_df):
 
         for _, row in grouped.iterrows():
             cart_recs.append({
-                'product_id':           None,
+                'product_id':           int(representative_product_id),
                 'suggested_product_id': int(row['suggested_product_id']),
                 'score':                round(float(row['score']), 4),
                 'type':                 'priority_cart',
@@ -125,7 +126,7 @@ def run_training():
 
     # 🛠️ VỊ TRÍ ĐÃ SỬA (LỖI 2): Đưa đoạn kéo dữ liệu SQL và print phân bố lên ĐẦU hàm run_training()
     df = pd.read_sql("""
-        SELECT r.product_id, r.brand, r.unit_price, r.content_tags,
+        SELECT r.product_id, r.brand, r.unit_price, r.content_tags,r.is_synthetic,
                p.cat_id, c.cat_name
         FROM ai_ready_data r
         JOIN Products p ON r.product_id = p.product_id
@@ -179,7 +180,7 @@ def run_training():
                     wrong_examples.append(
                         f"  {src['brand']} {src['unit_price']:,.0f}đ"
                         f" → {rec['brand']} {rec['unit_price']:,.0f}đ"
-                        f" (score={score:.3f})"
+                        f" (scorơe={score:.3f})"
                     )
             all_results.append({
                 'cat_name':  cat_name,
@@ -207,10 +208,10 @@ def run_training():
                     abs(src['unit_price'] - rec['unit_price'])
                     / (src['unit_price'] + 1)
                 ) <= tolerance
-                if price_ok and score > 0.1:
+                if price_ok and score > 0.1 and int(rec.get('is_synthetic', 0)) == 0:
                     all_recs.append({
                         'product_id':           int(src['product_id']),
-                        'suggested_product_id': int(rec['product_id']),
+                        'suggested_product_id': int(rec['product_id']), # Đảm bảo ID thật 100% xuất lên Web
                         'score':                round(float(score), 4),
                         'type':                 'item_similarity',
                     })

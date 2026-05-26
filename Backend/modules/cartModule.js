@@ -5,18 +5,11 @@ class CartModule {
     addToCart = async (req, res) => {
         try {
             const { productId, quantity } = req.body;
-            const userId = req.user.user_id; // Lấy an toàn từ token đã qua middleware xác thực
+            const userId = req.user.user_id; 
 
-            // 1. Gọi DAO kiểm tra sự tồn tại của sản phẩm trong giỏ
-            const checkItem = await cartDAO.checkItemInCart(userId, productId);
-
-            if (checkItem.length > 0) {
-                // 2a. Nếu đã có thì lệnh cho DAO cộng dồn số lượng
-                await cartDAO.updateQuantity(userId, productId, quantity);
-            } else {
-                // 2b. Nếu chưa có thì lệnh cho DAO chèn bản ghi mới
-                await cartDAO.insertToCart(userId, productId, quantity);
-            }
+            // Giờ đây không cần checkItemInCart hay if-else gì ở đây nữa
+            // Chỉ gọi duy nhất 1 lần xuống Procedure tích hợp
+            await cartDAO.addOrUpdateCart(userId, productId, quantity);
 
             res.status(200).send("Đã thêm thành công!");
         } catch (err) {
@@ -24,7 +17,6 @@ class CartModule {
             res.status(500).send("Lỗi khi thêm vào giỏ hàng: " + err.message);
         }
     }
-
     // [NGHIỆP VỤ 2]: Lấy danh sách giỏ hàng của người dùng
     getCart = async (req, res) => {
         try {

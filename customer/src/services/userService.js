@@ -12,8 +12,14 @@ class UserService {
     }
 
     // Gọi API xử lý đăng ký tài khoản mới
-    async registerApi(username, email, password) {
-        const response = await axios.post(`${API_BASE_URL}/register`, { username, email, password });
+    async registerApi(username, email, password, phone, address) {
+        const response = await axios.post(`${API_BASE_URL}/register`, { 
+            username, 
+            email, 
+            password, 
+            phone_number: phone,      // Bây giờ phone mới được định nghĩa
+            default_address: address  // Bây giờ address mới được định nghĩa
+        });
         return response;
     }
     // 3.Gọi API lấy thông tin Profile dựa trên userId

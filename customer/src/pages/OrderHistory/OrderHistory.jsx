@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import orderService from '../../services/orderService'; // 🎯 ĐÃ ĐỔI ĐƯỜNG DẪN: Dùng dịch vụ tập trung
+import { useNavigate } from 'react-router-dom';
+import orderService from '../../services/orderService';
 import './OrderHistory.css';
-import Payment from '../Cart/Payment'; // Nếu có dùng trong Cart.jsx
 
 const OrderHistory = () => {
+    const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -41,6 +42,34 @@ const OrderHistory = () => {
         }
     };
 
+    const translateOrderStatus = (status) => {
+        switch (status) {
+            case 'PENDING': return 'Chờ xử lý';
+            case 'SHIPPING': return 'Đang giao';
+            case 'DELIVERED': return 'Đã giao';
+            case 'CANCELLED': return 'Đã huỷ';
+            default: return status || 'Không xác định';
+        }
+    };
+
+    // Hành động của khách hàng: xác nhận đã nhận hàng (COD) hoặc thanh toán (Bank transfer)
+    const handleCustomerAction = async (orderId, actionType) => {
+        try {
+            if (actionType === 'received') {
+                await orderService.updateOrderStatusApi(orderId, 'DELIVERED');
+            } else if (actionType === 'paid') {
+                // For now mark as DELIVERED after payment confirmation from customer side
+                await orderService.updateOrderStatusApi(orderId, 'DELIVERED');
+            }
+            // reload list
+            const resp = await orderService.getOrderHistoryApi();
+            setOrders(resp.data);
+        } catch (err) {
+            console.error('Lỗi khi cập nhật trạng thái đơn hàng:', err);
+            alert('Cập nhật thất bại. Vui lòng thử lại.');
+        }
+    };
+
     if (loading) return <div className="history-loading">Đang tải lịch sử đơn hàng...</div>;
 
     return (
@@ -52,8 +81,8 @@ const OrderHistory = () => {
                         <div key={order.order_id} className="order-history-card">
                             <div className="card-header">
                                 <span className="order-id">Mã đơn: <strong>{order.order_id}</strong></span>
-                                <span className={`status-badge ${getStatusBadgeClass(order.order_status)}`}>
-                                    {order.order_status}
+                                <span className={`status-badge ${getStatusBadgeClass(order.order_status?.toUpperCase())}`}>
+                                    {translateOrderStatus(order.order_status?.toUpperCase())}
                                 </span>
                             </div>
                             <div className="card-body">
@@ -66,6 +95,28 @@ const OrderHistory = () => {
                             <div className="card-footer">
                                 <span>Tổng tiền thanh toán:</span>
                                 <span className="total-amount">{order.total_cost?.toLocaleString()}đ</span>
+                                <div className="order-actions">
+<button className="btn-detail" onClick={() => navigate(`/profile/orders/${order.order_id}`)}>
+                                        Xem chi tiết
+                                    </button>
+
+                                    {/* Disable actions for cancelled orders */}
+                                    {order.order_status !== 'CANCELLED' && (
+                                        <>
+                                            {order.order_status === 'SHIPPING' && order.payment_method === 'COD' && (
+                                                <button className="btn-received" onClick={() => handleCustomerAction(order.order_id, 'received')}>
+                                                    Đã nhận được hàng
+                                                </button>
+                                            )}
+
+                                            {order.order_status === 'SHIPPING' && order.payment_method === 'BANK_TRANSFER' && (
+                                                <button className="btn-pay" onClick={() => navigate('/payment', { state: { orderId: order.order_id }})}>
+                                                    Thanh toán
+                                                </button>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}

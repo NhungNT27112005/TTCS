@@ -66,9 +66,26 @@ const Orders = () => {
                                 </td>
                                 <td>{new Date(o.created_at).toLocaleDateString()}</td>
                                 <td>
-                                    <button className="btn-detail" onClick={() => navigate(`/orders/${o.order_id}`)}>
-                                        Xem chi tiết
-                                    </button>
+                                    <div className="admin-actions">
+                                        {/* Nút Xem */}
+                                        <button className="btn-action btn-detail" onClick={() => navigate(`/orders/${o.order_id}`)}>
+                                            <i className="fa-solid fa-eye"></i> 
+                                        </button>
+
+                                        {/* Nút Duyệt: Nếu không thỏa mãn thì dùng style display: none để giữ chỗ */}
+                                        <button 
+                                            className="btn-action btn-approve" 
+                                            style={{ display: (o.order_status !== 'SHIPPING' && o.order_status !== 'CANCELLED') ? 'inline-flex' : 'none' }}
+                                            onClick={async () => { await orderService.updateOrderStatus(o.order_id, 'SHIPPING'); fetchOrders(); }}
+                                        >
+                                            <i className="fa-solid fa-truck"></i> 
+                                        </button>
+
+                                        {/* Nút Hủy */}
+                                        <button className="btn-action btn-cancel" onClick={async () => { if(window.confirm('Bạn có chắc muốn hủy đơn này?')){ await orderService.updateOrderStatus(o.order_id, 'CANCELLED'); fetchOrders(); } }}>
+                                            <i className="fa-solid fa-xmark"></i> 
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

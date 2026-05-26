@@ -59,25 +59,30 @@ const OrderDetail = () => {
                 <p><strong>Email: </strong>{order.email}</p>
             </div>
 
-            <table className="admin-table">
-                <thead>
-                    <tr>
-                        <th>Ảnh</th><th>Sản phẩm</th><th>Số lượng</th><th>Đơn giá</th><th>Bảo hành</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {details.map(item => (
-                        <tr key={item.detail_id}>
-                            <td><img src={item.thumbnail_url} alt="" className="order-product-img" /></td>
-                            <td>{item.product_name}</td>
-                            <td>{item.quantity}</td>
-                            <td>{Number(item.unit_price_at_sale).toLocaleString()}đ</td>
-                            <td>{item.warranty_period_applied} tháng</td>
+            <div className="table-container"> {/* Thêm thẻ div này bao ngoài */}
+                <table className="product-table">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Giá</th>
+                            <th>Bảo hành</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-
+                    </thead>
+                    <tbody>
+                        {details.map(item => (
+                            <tr key={item.detail_id}>
+                                <td><img src={item.thumbnail_url} alt="" className="order-product-img" /></td>
+                                <td>{item.product_name}</td>
+                                <td>{item.quantity}</td>
+                                <td>{Number(item.unit_price_at_sale).toLocaleString()}đ</td>
+                                <td>{item.warranty_period_applied} tháng</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
             <div className="order-detail-footer">
                 <div className="order-total-box">
                     <h3>Tổng tiền</h3>
@@ -86,10 +91,10 @@ const OrderDetail = () => {
                 <div className="order-status-box">
                     <h3>Trạng thái</h3>
                     <select value={status} onChange={(e) => setStatus(e.target.value)}>
-                        <option value="pending">Chờ xử lý</option>
-                        <option value="shipping">Đang giao</option>
-                        <option value="completed">Hoàn thành</option>
-                        <option value="cancelled">Đã hủy</option>
+                        <option value="PENDING">Chờ xử lý</option>
+                        <option value="SHIPPING">Đang giao</option>
+                        <option value="DELIVERED">Đã giao</option>
+                        <option value="CANCELLED">Đã hủy</option>
                     </select>
                     <button className="btn-save" onClick={handleUpdateStatus}>Cập nhật</button>
                 </div>
