@@ -1,0 +1,115 @@
+/* Container chính */
+.suggestions-wrapper {
+    margin: 40px 0;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 20px;
+    /* Đổ bóng nhẹ nhàng cho toàn khối */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f1f1f1;
+}
+
+/* Tiêu đề phần gợi ý */
+.suggestions-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #eee;
+}
+
+.suggestions-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    /* Tạo dải màu cho chữ để trông hiện đại hơn */
+    background: linear-gradient(90deg, #2d3436, #ff7675);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+}
+
+.ai-icon {
+    font-size: 1.5rem;
+    animation: sparkle 2s infinite ease-in-out;
+}
+
+@keyframes sparkle {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #ff7675); }
+    50% { transform: scale(1.2); filter: drop-shadow(0 0 8px #ff7675); }
+}
+
+/* Grid hiển thị danh sách */
+.suggestions-grid {
+    display: grid;
+    /* Tự động điều chỉnh số cột theo độ rộng màn hình */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+/* Thẻ sản phẩm */
+.suggestion-card {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+}
+
+.suggestion-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(255, 118, 117, 0.15);
+    border-color: #ff7675;
+}
+
+/* Phần ảnh */
+.img-box {
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    background: #f9f9f9;
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Để ảnh không bị vỡ/mất hình */
+    padding: 10px;
+    transition: transform 0.5s ease;
+}
+
+.suggestion-card:hover .img-box img {
+    transform: scale(1.1);
+}
+
+/* Phần thông tin */
+.info-box {
+    padding: 15px;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.info-box h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2d3436;
+    margin: 0 0 10px 0;
+    /* Giới hạn 2 dòng cho tên sản phẩm */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.info-box .price {
+    color: #ff7675;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}

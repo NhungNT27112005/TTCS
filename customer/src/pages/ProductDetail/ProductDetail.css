@@ -1,0 +1,204 @@
+/* TỔNG THỂ */
+.product-detail-container {
+    padding: 30px 10%;
+    background-color: #f1f3f7; /* Màu nền xám nhạt hiện đại */
+    min-height: 100vh;
+}
+
+.detail-wrapper {
+    display: flex;
+    gap: 40px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* CỘT TRÁI - ẢNH */
+.detail-left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.main-image-card {
+    width: 100%;
+    position: sticky;
+    top: 20px;
+}
+
+.main-image-card img {
+    width: 100%;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+/* CỘT PHẢI - THÔNG TIN */
+.detail-right {
+    flex: 1;
+}
+
+.detail-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.detail-price-box {
+    margin: 20px 0;
+    padding: 15px;
+    background: #fef2f2;
+    border-radius: 8px;
+}
+
+.detail-curr-price {
+    font-size: 28px;
+    color: #d70018; /* Màu đỏ giá tiền */
+    font-weight: 800;
+}
+
+/* NÚT BẤM */
+.btn-add-to-cart {
+    width: 100%;
+    padding: 15px;
+    background: #d70018;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 25px;
+    transition: 0.2s;
+}
+
+.btn-add-to-cart:hover {
+    background: #c20016;
+    transform: scale(1.01);
+}
+
+/* BẢNG THÔNG SỐ - PHẦN QUAN TRỌNG NHẤT TRONG ẢNH CỦA BẠN */
+.specs-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-top: 20px;
+    background: #fff;
+    overflow: hidden; /* Để bo góc hoạt động chuẩn */
+}
+
+.specs-section h3 {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    margin: 0;
+    font-size: 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.specs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.specs-table tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+.specs-table td {
+    padding: 12px 15px;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f1f1;
+    line-height: 1.5;
+}
+
+.spec-label {
+    width: 35%;
+    color: #666;
+    font-weight: 600;
+}
+
+.spec-value {
+    color: #333;
+}
+
+/* Tùy chỉnh phần Header của Specs để bấm được */
+.specs-header {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background 0.3s;
+}
+
+.specs-header:hover {
+    background: #edf2f7;
+}
+
+.specs-header h3 {
+    border-bottom: none !important; /* Bỏ border cũ */
+    padding: 0 !important;
+}
+
+/* Biểu tượng mũi tên xoay */
+.arrow-icon {
+    transition: transform 0.3s ease;
+    color: #666;
+}
+
+.arrow-icon.rotate {
+    transform: rotate(180deg);
+}
+
+/* Phần nội dung ẩn/hiện */
+.specs-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+}
+
+/* Khi mở ra */
+.specs-section.is-open .specs-content {
+    max-height: 400px; /* Cố định chiều cao cửa sổ xem */
+    overflow-y: auto;  /* Hiện thanh cuộn khi nội dung dài */
+    border-top: 1px solid #f1f1f1;
+}
+
+.specs-table td {
+    padding: 15px; /* Tăng padding cho thoáng */
+}
+
+/* Thêm hiệu ứng cho viền section */
+.specs-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-top: 20px;
+    transition: box-shadow 0.3s;
+}
+
+.specs-section.is-open {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Tùy chỉnh thanh cuộn cho đẹp hơn */
+.specs-content::-webkit-scrollbar {
+    width: 6px;
+}
+.specs-content::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+}
+
+.specs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.specs-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f9f9f9;
+}

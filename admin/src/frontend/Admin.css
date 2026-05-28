@@ -1,0 +1,322 @@
+.admin-container {
+    display: flex;
+    height: 100vh; /* Cố định chiều cao tổng */
+    background-color: #f4f7f6;
+    overflow: hidden; /* Quan trọng: Ngăn không cho toàn bộ trang bị cuộn */
+}
+
+.admin-topbar {
+    position: sticky; /* Ghim cố định ở đỉnh khi cuộn trang */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100; /* Đảm bảo luôn nằm trên các hàng trong bảng danh sách sản phẩm */
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    background: #ffffff; /* Đặt nền màu trắng rõ ràng để không bị xuyên thấu nội dung */
+    padding: 15px 30px;
+    border-bottom: 1px solid #e2e8f0;
+}
+.admin-sidebar {
+    position: sticky;
+    top: 0;
+    width: 200px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+}
+
+.admin-logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-red);
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.admin-nav { display: flex; flex-direction: column; gap: 10px; }
+.admin-nav a {
+    color: #bdc3c7;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+.admin-nav a:hover { background: #34495e; color: white; }
+
+.admin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* <--- CHÌA KHÓA: Nội dung chính sẽ cuộn trong khu vực này */
+    height: 100vh;    /* Ép nó cao bằng màn hình */
+}
+.admin-topbar {
+    background: white;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.admin-content { padding: 30px; flex: 1;}
+.admin-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+}
+
+/* ===== TABLE ===== */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* ⭐ FIX: thead nền tối, chữ trắng — rõ ràng, không bị override bởi hover */
+.admin-table thead {
+    background: #1e293b !important;
+}
+
+.admin-table thead th {
+    padding: 15px;
+    text-align: left;
+    color: #ffffff !important;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    font-size: 14px;
+}
+
+.admin-table td {
+    padding: 12px 15px; /* Tăng padding để các cột cách xa nhau hơn */
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+/* Ép cột Khách hàng rộng hơn */
+.admin-table th:nth-child(2), 
+.admin-table td:nth-child(2) {
+    width: 20%; /* Tăng độ rộng cột khách hàng lên 30% */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Ép cột chứa nút (Cột cuối) hẹp lại */
+.admin-table th:last-child, 
+.admin-table td:last-child {
+    width: 15%; /* Giảm cột nút xuống còn 15% */
+    text-align: left;
+}
+
+/* ⭐ FIX: Chỉ hover tbody tr, KHÔNG chạm vào thead */
+.admin-table tbody tr {
+    transition: background 0.2s;
+}
+
+.admin-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.admin-product-img { width: 50px; height: 50px; object-fit: contain; }
+
+.btn-add-main {
+    background: var(--primary-red);
+    color: rgb(10, 9, 9);
+    border: 1px solid #2c3e50;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-edit {
+    @extend .btn-action; 
+    padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s;
+    
+    background-color: #f1c40f; 
+    color: #000; 
+}
+.btn-delete { color: #e74c3c; background: none; border: none; cursor: pointer; }
+
+.card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    background: #f5f5f5;
+}
+
+.activity-list { list-style: none; padding: 0; margin-top: 15px; }
+.activity-list li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+.activity-list li img { width: 40px; height: 40px; object-fit: contain; }
+.activity-name { font-weight: 600; font-size: 14px; }
+.activity-time { font-size: 12px; color: #999; }
+
+.progress-bg { background: #eee; height: 8px; border-radius: 4px; margin: 5px 0 15px; }
+.progress-fill { background: var(--primary-red); height: 100%; border-radius: 4px; }
+
+.admin-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.admin-header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.search-input {
+    width: 280px;
+    padding: 12px 16px;
+    border: 1px solid #0e0c0c;
+    border-radius: 10px;
+    outline: none;
+    font-size: 15px;
+    transition: 0.3s;
+    margin-left: 200px;
+    margin-right: 20px;
+}
+
+.search-input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.order-filter {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    font-size: 15px;
+    outline: none;
+}
+
+/* Status badges dùng chung */
+.status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-block;
+}
+.status.pending   { background: #fff3cd; color: #ff9800; }
+.status.shipping  { background: #e3f2fd; color: #1976d2; }
+.status.delivered { background: #e8f5e9; color: #2e7d32; }
+.status.completed { background: #e8f5e9; color: #2e7d32; }
+.status.cancelled { background: #ffebee; color: #c62828; }
+
+.btn-detail {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+.btn-detail:hover { background: #2563eb; }
+
+/* Unified action button style for admin tables */
+.admin-actions {
+    display: flex;
+    gap: 4px; /* Thu hẹp khoảng cách giữa các nút */
+    justify-content: flex-end; /* Căn phải để nhìn chuyên nghiệp */
+}
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px; /* Giảm padding để nút bé hơn */
+    font-size: 12px;   /* Giảm size chữ nút */
+    border: none;
+    background: transparent !important;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #475569;
+    transition: 0.2s;
+}
+.btn-action i {
+    font-size: 16px; /* Chỉnh kích thước icon cho đồng đều */
+}
+.btn-action:active { transform: translateY(1px); }
+
+/* Modifiers set only icon color (no background) */
+/* Định nghĩa màu riêng cho từng loại nút (vẫn giữ nét) */
+.btn-detail { color: #3b82f6 !important; } /* Xanh dương */
+.btn-approve { color: #10b981 !important; } /* Xanh lá */
+.btn-cancel { color: #ef4444 !important; }  /* Đỏ */
+
+/* subtle hover that keeps icon visible but no solid fill */
+/* Hiệu ứng khi di chuột vào (đổi màu nhẹ và phóng to 1 chút cho chuyên nghiệp) */
+.btn-action:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+/* Disabled/locked appearance for cancelled orders */
+.btn-action[disabled], .btn-action.disabled {
+    opacity: 0.5; cursor: not-allowed; box-shadow: none; color: #9ca3af;
+}
+.btn-hidden {
+    visibility: hidden;
+    pointer-events: none;
+}
+.btn-logout {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+/* ===================================================
+   GHIM CỐ ĐỊNH THANH TIÊU ĐỀ (THEAD) CỦA CÁC DANH SÁCH
+=================================================== */
+
+/* 1. Đặt thanh cuộn hoặc vị trí tương đối cho bảng admin */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* 2. Kích hoạt thuộc tính đứng im cho toàn bộ hàng tiêu đề */
+.admin-table thead {
+    position: sticky;
+    /* 💡 QUAN TRỌNG: Đặt top bằng đúng chiều cao của thanh admin-topbar (thường là 60px đến 70px)
+       để khi cuộn xuống, tiêu đề bảng sẽ hít ngay dưới thanh Admin chứ không bị chui vào trong */
+    top: 65px; 
+    z-index: 99; /* Nằm dưới thanh topbar tổng (9999) nhưng nằm trên các hàng dữ liệu */
+}
+
+/* 3. Ghim sticky bắt buộc cho từng ô TH (Trình duyệt ăn thuộc tính này tốt nhất ở thẻ TH) */
+.admin-table thead th {
+    position: sticky;
+    top: 65px; /* Phải trùng với top của thead ở trên */
+    
+    /* Đổ lại màu nền tối cố định để khi các hàng sản phẩm cuộn lên 
+       chữ của chúng sẽ bị che đi, không bị xuyên thấu đè lên chữ tiêu đề */
+    background-color: #1e293b !important; 
+    color: #ffffff !important; /* Giữ chữ màu trắng rõ nét */
+    z-index: 99;
+}
+
+/* 4. Khóa cứng không cho hiệu ứng hover làm đổi màu nền của thanh tiêu đề này */
+.admin-table thead tr:hover {
+    background-color: #1e293b !important;
+}
