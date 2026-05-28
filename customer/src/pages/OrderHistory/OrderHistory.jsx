@@ -69,6 +69,22 @@ const OrderHistory = () => {
             alert('Cập nhật thất bại. Vui lòng thử lại.');
         }
     };
+    const handleCancelOrder = async (orderId) => {
+    if (!window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) return;
+        try {
+            // 🎯 Gọi đúng hàm đã được định nghĩa trong file orderService của bạn
+            await orderService.updateOrderStatusApi(orderId, 'CANCELLED');
+            
+            alert('Hủy đơn hàng thành công!');
+            
+            // Tải lại danh sách lịch sử đơn hàng sau khi hủy
+            const response = await orderService.getOrderHistoryApi();
+            setOrders(response.data);
+        } catch (error) {
+            console.error("Lỗi khi hủy đơn hàng:", error);
+            alert(error.response?.data?.message || 'Không thể hủy đơn hàng vào lúc này.');
+        }
+    };
 
     if (loading) return <div className="history-loading">Đang tải lịch sử đơn hàng...</div>;
 
@@ -96,9 +112,14 @@ const OrderHistory = () => {
                                 <span>Tổng tiền thanh toán:</span>
                                 <span className="total-amount">{order.total_cost?.toLocaleString()}đ</span>
                                 <div className="order-actions">
-<button className="btn-detail" onClick={() => navigate(`/profile/orders/${order.order_id}`)}>
+                                    <button className="btn-detail" onClick={() => navigate(`/profile/orders/${order.order_id}`)}>
                                         Xem chi tiết
                                     </button>
+                                    {order.order_status === 'PENDING' && (
+                                        <button className="btn-cancel-order" onClick={() => handleCancelOrder(order.order_id)}>
+                                            Hủy đơn hàng
+                                        </button>
+                                    )}
 
                                     {/* Disable actions for cancelled orders */}
                                     {order.order_status !== 'CANCELLED' && (

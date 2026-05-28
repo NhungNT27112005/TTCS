@@ -108,6 +108,17 @@ class OrderModule {
                 return res.status(403).json({ message: "Bạn không có quyền cập nhật đơn hàng này" });
             }
 
+            if (status === 'CANCELLED') {
+                // Chặn nghiêm ngặt: Chỉ cho phép hủy khi trạng thái cũ là PENDING
+                if (order.order_status !== 'PENDING') {
+                    return res.status(400).json({ message: 'Không thể hủy đơn hàng khi đơn đã được xử lý hoặc đang vận chuyển.' });
+                }
+                
+                // Tiến hành cập nhật trạng thái đơn thành CANCELLED
+                await orderDAO.updateOrderStatus(id, 'CANCELLED');
+                return res.json({ message: 'Đơn hàng của bạn đã được hủy thành công.' });
+            }
+
             // Hỗ trợ các luồng hợp lệ từ phía khách hàng:
             // 1) Khách xác nhận chuyển khoản cho đơn BANK_TRANSFER: từ PENDING -> SHIPPING
             // 2) Khách xác nhận đã nhận hàng (cho COD hoặc sau thanh toán): từ SHIPPING -> DELIVERED

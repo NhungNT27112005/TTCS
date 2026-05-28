@@ -113,3 +113,8 @@
     font-weight: 700;
     margin-bottom: 15px;
 }
+.suggestion-card-link {
+    text-decoration: none; /* Xóa bỏ hoàn toàn gạch chân mặc định của thẻ Link */
+    color: inherit;        /* Giữ nguyên màu chữ mặc định của cấu trúc bên trong, không bị hóa xanh */
+    display: block;        /* Giúp thẻ link bao trọn toàn bộ khối sản phẩm */
+}

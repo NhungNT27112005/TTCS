@@ -132,6 +132,13 @@ const Payment = () => {
         }
     };
 
+    const handleOrderInfoChange = (field, value) => {
+        setOrderInfo(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
     if (loadingOrder) {
         return <div className="payment-loading">Đang tải thông tin đơn hàng...</div>;
     }
@@ -192,16 +199,9 @@ const Payment = () => {
                                         <p>Sếp đã lựa chọn hình thức thanh toán khi nhận hàng.</p>
                                         <div className="cod-alert-box">
                                             <i className="fa-solid fa-circle-info"></i>
-                                            <span><strong>Thông báo nghiệp vụ hệ thống:</strong> Đơn hàng sẽ luôn ở trạng thái <mark className="badge-pending">PENDING</mark> cho đến khi đối tác vận chuyển giao hàng thành công và Admin chuyển trạng thái sang <mark className="badge-completed">DELIVERED / COMPLETED</mark>. Khi đó đơn hàng mới chính thức được hệ thống ghi nhận là Đã trả tiền.</span>
+                                            <span><strong>Thông báo nghiệp vụ hệ thống:</strong> Đơn hàng sẽ luôn ở trạng thái <mark className="badge-pending">PENDING</mark> cho đến khi nhân viên chuyển hàng cho đối tác vận chuyển thành công và Admin chuyển trạng thái sang <mark className="badge-completed">SHIPPING</mark>.
                                         </div>
                                     </div>
-                                    {selectedItems.length > 0 && totalPrice > 0 ? (
-                                        <button className="btn-confirm-payment" onClick={handleConfirmOrder} disabled={loading}>
-                                            {loading ? "Đang tạo đơn..." : "Xác nhận tạo đơn hàng COD"}
-                                        </button>
-                                    ) : (
-                                        <p className="empty-cart-note">Giỏ hàng trống, không có đơn hàng để xác nhận.</p>
-                                    )}
                                 </div>
                             )}
                         </>

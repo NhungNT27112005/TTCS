@@ -16,3 +16,7 @@
     color: var(--primary-red);
     font-weight: bold;
 }
+.product-item a {
+    text-decoration: none; /* Xóa gạch chân ở tên và giá sản phẩm */
+    color: inherit;        /* Ngăn chữ bị đổi sang màu xanh link mặc định */
+}
