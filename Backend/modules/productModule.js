@@ -45,7 +45,7 @@ class ProductModule {
         try {
             const { q } = req.query; // Lấy từ khóa tìm kiếm (Query Parameter) từ URL
             
-            // Nếu khách không nhập từ khóa hoặc chỉ nhập khoảng trắng, trả về mảng trống êm đẹp
+            // Nếu khách không nhập từ khóa hoặc chỉ nhập khoảng trắng, trả về mảng trống
             if (!q || q.trim() === "") {
                 return res.json([]);
             }
