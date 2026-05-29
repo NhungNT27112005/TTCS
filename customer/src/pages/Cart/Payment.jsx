@@ -199,7 +199,7 @@ const Payment = () => {
                                         <p>Sếp đã lựa chọn hình thức thanh toán khi nhận hàng.</p>
                                         <div className="cod-alert-box">
                                             <i className="fa-solid fa-circle-info"></i>
-                                            <span><strong>Thông báo nghiệp vụ hệ thống:</strong> Đơn hàng sẽ luôn ở trạng thái <mark className="badge-pending">PENDING</mark> cho đến khi nhân viên chuyển hàng cho đối tác vận chuyển thành công và Admin chuyển trạng thái sang <mark className="badge-completed">SHIPPING</mark>.
+                                            <strong>Thông báo nghiệp vụ hệ thống:</strong> Đơn hàng sẽ luôn ở trạng thái <mark className="badge-pending">PENDING</mark> cho đến khi nhân viên chuyển hàng cho đối tác vận chuyển thành công và Admin chuyển trạng thái sang <mark className="badge-completed">SHIPPING</mark>.
                                         </div>
                                     </div>
                                 </div>
