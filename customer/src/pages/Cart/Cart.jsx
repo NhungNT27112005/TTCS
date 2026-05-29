@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
-import cartService from '../../services/cartService'; // 🎯 GỌI BƯU TÁ CART SERVICE
+import cartService from '../../services/cartService'; // 
 import orderService from '../../services/orderService';
 import './Cart.css';
 
 const Cart = () => {
-    // Giữ nguyên 100% đống State thô ban đầu của sếp để né bug UI
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();

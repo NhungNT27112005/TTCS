@@ -118,8 +118,21 @@ const Payment = () => {
             } else {
                 const response = await orderService.checkoutApi(orderInfo);
                 if (response.status === 201) {
-                    setCreatedOrderId(response.data.order_id);
-                    setOrderStep(2); // Chuyển sang bước Hoàn tất hiển thị giao diện thành công
+                    setCreatedOrderId(
+                        response.data.order_id
+                    );
+                    // COD → thành công luôn
+                    if (
+                        orderInfo.payment_method
+                        === "COD"
+                    ) {
+                        navigate(
+                            "/profile/orders"
+                        );
+                        return;
+                    }
+                    // Chuyển khoản mới sang bước 2
+                    setOrderStep(2);
                 }
             }
         } catch (error) {
@@ -141,17 +154,43 @@ const Payment = () => {
             <h1 className="payment-title">XÁC NHẬN THANH TOÁN ĐƠN HÀNG</h1>
 
             {/* Cấu trúc thanh Stepper tiến trình */}
-            <div className="stepper">
-                <div className={`step ${orderStep === 1 ? 'active' : ''}`}>
-                    <div className="step-icon"><i className="fa-solid fa-file-invoice"></i></div>
-                    <p>Thông tin thanh toán</p>
+        
+        <div className="stepper">
+            <div className="step active">
+                <div className="step-icon">
+                    <i className="fa-solid fa-file-invoice"></i>
                 </div>
+                <p>
+                    Thông tin thanh toán
+                </p>
+        </div>
+
+    {/* Chỉ hiện bước 2 nếu KHÔNG phải COD */}
+    {
+        orderInfo.payment_method !== "COD" && (
+            <>
                 <div className="step-line"></div>
-                <div className={`step ${orderStep === 2 ? 'active' : ''}`}>
-                    <div className="step-icon"><i className="fa-solid fa-trophy"></i></div>
-                    <p>Hoàn tất đơn hàng</p>
+                <div
+                    className={`step ${
+                        orderStep === 2
+                        ? 'active'
+                        : ''
+                    }`}
+                >
+                    <div className="step-icon">
+                        <i className="fa-solid fa-trophy"></i>
+                    </div>
+
+                    <p>
+                        Hoàn tất đơn hàng
+                    </p>
                 </div>
-            </div>
+            </>
+        )
+    }
+
+</div>
+
 
             <div className="payment-content">
                 {/* CỘT TRÁI: HIỂN THỊ THEO PHƯƠNG THỨC THANH TOÁN HOẶC TRẠNG THÁI HOÀN TẤT */}
@@ -186,23 +225,98 @@ const Payment = () => {
                                 </div>
                             ) : (
                                 /* TRƯỜNG HỢP 2: KHÁCH CHỌN PHƯƠNG THỨC THANH TOÁN COD */
-                                <div className="cod-info-section">
-                                    <h3><i className="fa-solid fa-truck-ramp-box"></i> Thanh toán khi nhận hàng (COD)</h3>
-                                    <div className="cod-card">
-                                        <p>Sếp đã lựa chọn hình thức thanh toán khi nhận hàng.</p>
-                                        <div className="cod-alert-box">
-                                            <i className="fa-solid fa-circle-info"></i>
-                                            <span><strong>Thông báo nghiệp vụ hệ thống:</strong> Đơn hàng sẽ luôn ở trạng thái <mark className="badge-pending">PENDING</mark> cho đến khi đối tác vận chuyển giao hàng thành công và Admin chuyển trạng thái sang <mark className="badge-completed">DELIVERED / COMPLETED</mark>. Khi đó đơn hàng mới chính thức được hệ thống ghi nhận là Đã trả tiền.</span>
-                                        </div>
-                                    </div>
-                                    {selectedItems.length > 0 && totalPrice > 0 ? (
-                                        <button className="btn-confirm-payment" onClick={handleConfirmOrder} disabled={loading}>
-                                            {loading ? "Đang tạo đơn..." : "Xác nhận tạo đơn hàng COD"}
-                                        </button>
-                                    ) : (
-                                        <p className="empty-cart-note">Giỏ hàng trống, không có đơn hàng để xác nhận.</p>
-                                    )}
-                                </div>
+                          
+<div className="cod-info-section">
+
+    <div className="payment-card">
+
+        <div className="payment-header">
+            <div className="payment-icon">
+                <i className="fa-solid fa-truck-fast"></i>
+            </div>
+
+            <div>
+                <h3>
+                    Thanh toán khi nhận hàng (COD)
+                </h3>
+
+                <p className="payment-subtitle">
+                    Thanh toán bằng tiền mặt
+                    khi đơn hàng giao tới bạn
+                </p>
+            </div>
+        </div>
+
+        <div className="payment-note-box">
+            <i className="fa-solid fa-circle-info"></i>
+
+            <span>
+                Đơn hàng sẽ được xác nhận
+                sau khi giao hàng thành công.
+                Vui lòng chuẩn bị tiền mặt
+                khi nhận hàng.
+            </span>
+        </div>
+
+        <div className="delivery-info">
+
+            <div className="info-row">
+                <span>Địa chỉ giao hàng</span>
+                <strong>
+                    {orderInfo.delivery_address
+                    || "Chưa cập nhật"}
+                </strong>
+            </div>
+
+            <div className="info-row">
+                <span>Phương thức giao</span>
+
+                <strong>
+                    {translateDeliveryMethod(
+                        orderInfo.delivery_method
+                    )}
+                </strong>
+            </div>
+
+            <div className="info-row">
+                <span>Tổng thanh toán</span>
+
+                <strong className="price-highlight">
+                    {totalPrice.toLocaleString()} đ
+                </strong>
+            </div>
+
+        </div>
+
+        {selectedItems.length > 0 &&
+        totalPrice > 0 ? (
+
+            <button
+                className="btn-confirm-payment"
+                onClick={handleConfirmOrder}
+                disabled={loading}
+            >
+
+                {
+                    loading
+                    ? "Đang xử lý..."
+                    : "Xác nhận đặt hàng"
+                }
+
+            </button>
+
+        ) : (
+
+            <p className="empty-cart-note">
+                Giỏ hàng đang trống
+            </p>
+
+        )}
+
+    </div>
+
+</div>
+
                             )}
                         </>
                     ) : (
